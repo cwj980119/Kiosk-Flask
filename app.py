@@ -3,7 +3,7 @@ from s3 import s3_connection, s3_put_object, s3_get_object
 import os
 import boto3
 from dotenv import load_dotenv
-
+from login import flasklogin
 
 app = Flask(__name__)
 
@@ -44,6 +44,7 @@ def upload():
         
 @app.route('/fileDownload', methods=['GET','POST'])
 def download():
+    FL=flasklogin()
     '''
     object_name=request.args.get('object_name')
     file_path="./uploads/"
@@ -55,13 +56,27 @@ def download():
         else:   
             print("파일이 없습니다")
     '''       
-    object_name=request.args.get('object_name')
     file_path="./image/temp.jpg"
-    s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
+    
+    if os.path.exists(file_path):
+        os.remove(file_path)
+    '''원래코드 
+    object_name=request.args.get('object_name')
+    # 파일 다운로드하면서 바로 가능한가?
+    tempjpg=s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
+    login.flasklogin.run(tempjpg)
     return "Hello, World!"
+    '''
+    
+    #테스트용
+    object_name="image/img0.jpg"
+    # 파일 다운로드하면서 바로 가능한가?
+    s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
+    FL.run()
+    return "new image.jpg"
     
     ''' 
-    원래 하던거, 위는 테스트용
+    테스트용
     object_name=request.args.get('object_name')
     file_path="./uploads/"
     files=os.listdir("./uploads")
@@ -72,15 +87,3 @@ def download():
         else:   
             print("파일이 없습니다")         
     '''
-'''     
-@app.route('/fileDownload', methods=['POST'])
-def download():
-    sw=0
-    files=os.listdir("./uploads")
-    for x in files:
-        if(x==request.form['file']):
-            sw=1
-            
-    path="./uploads/"
-    return send_file(path + request.form['file'], attachment_filename = request.form['file'], as_attachment=True)
-'''

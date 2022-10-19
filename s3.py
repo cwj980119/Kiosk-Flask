@@ -59,4 +59,5 @@ def s3_get_object(s3, bucket, object_name, file_name):
     except Exception as e:
         print(e)
         return False
+    
     return True
