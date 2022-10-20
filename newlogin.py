@@ -2,50 +2,33 @@ import dlib,cv2
 import numpy as np
 from keras.models import load_model
 import pymysql
-'''
-def connectDB():
-    host="database-1.cb5pctivsgrb.us-east-1.rds.amazonaws.com"
-    username="root"
-    port=3306
-    database="log-in"
-    password="ksc2021583"
 
-    conn=pymysql.connect(host=host,user=username,password=password,db=database,port=port)
-    return(conn)
-'''
-#load_model = load_model('tl_20_cropped_e20_b200.h5')
+load_model = load_model('tl_20_cropped_e20_b200.h5')
 #load_model = load_model('face_model.h5')
-
 
 class flasklogin():    # 구 Thread 현 flasklogin
     def __init__(self):
-        print('init')
+        print("hello")
         
-    def run(self):  # 구 run 현
+    def login(self):  # 구 run 현
         
-        self.working = False
         detector = dlib.get_frontal_face_detector()
         #cam = cv2.VideoCapture(0, cv2.CAP_DSHOW) 삭제?
-        print("hello")
-        '''
-        width = cam.get(cv2.CAP_PROP_FRAME_WIDTH)
-        height = cam.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        print(round(width), height)
-        count = 0
-        user_list = np.empty(shape=self.user_num)
-        self.l = [0 for i in range(4)]
-        print(self.working)
-        '''
+        
         count = 0
         #user_list = np.empty(shape=self.user_num)
         self.l = [0 for i in range(4)]
-        print(self.working)
         #while self.working:
-        img, frame = cv2.imread("./image/temp.jpg",1)
+        frame = cv2.imread('./image/temp.jpg',1)
+        #cv2.imshow('VideoFrame', frame) #사진 보이기 테스트
+        #cv2.waitKey(1000)
         face = detector(frame)
+        user_list = np.empty(shape=self.user_num)
+        print("hell")
         for f in face:
             # dlib으로 얼굴 검출
             cv2.rectangle(frame, (f.left(), f.top()), (f.right(), f.bottom()), (0, 0, 255), 1)
+        
         if len(face) == 1:
             crop = frame[f.top():f.bottom(), f.left():f.right()]
             crop = cv2.resize(crop, (224, 224))
@@ -59,24 +42,22 @@ class flasklogin():    # 구 Thread 현 flasklogin
             print(image.shape)
             a = load_model.predict(image)
             # print(a[0][np.argmax(a)])
-            #if count < 100:
-            #    count += 1
-            #    user_list += a[0]
-            #    print(count)
+            if count < 100:
+                count += 1
+                user_list += a[0]
+                print(count)
+        else:
+            print("얼굴이 없습니다.")
                   
         frame = cv2.flip(frame, 1) #좌우반전
         cvt_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) #색상공간변환함수
         h, w, c = cvt_frame.shape
-        '''
+        
         if count > 50:
             a = np.sort(user_list)[::-1]
             for i in range(4):
                 self.l[i] = np.where(user_list==a[i])[0][0]
-            self.quit()
-            self.working = True
-            return
-        '''
-        self.working =False
+            return 
         
     def db_check(self):
         try:
@@ -86,8 +67,19 @@ class flasklogin():    # 구 Thread 현 flasklogin
             self.curs.execute(sql1)
             result = self.curs.fetchone()
             self.user_num = result[0] + 1
+            print(self.user_num)
         except:
             print("DB 연결 실패")
+            
+    def connectDB(self):
+        host = "database-1.cb5pctivsgrb.us-east-1.rds.amazonaws.com"
+        username = "root"
+        port = 3306
+        database = "log-in"
+        password = "ksc2021583"
+
+        conn = pymysql.connect(host=host, user=username, password=password, db=database, port=port)
+        return (conn)
 
 
 class Login():

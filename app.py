@@ -3,7 +3,7 @@ from s3 import s3_connection, s3_put_object, s3_get_object
 import os
 import boto3
 from dotenv import load_dotenv
-from login import flasklogin
+from newlogin import flasklogin
 
 app = Flask(__name__)
 
@@ -72,7 +72,9 @@ def download():
     object_name="image/img0.jpg"
     # 파일 다운로드하면서 바로 가능한가?
     s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
-    FL.run()
+    FL.db_check()
+    FL.login()
+    
     return "new image.jpg"
     
     ''' 
