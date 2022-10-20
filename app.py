@@ -1,3 +1,4 @@
+from sre_parse import FLAGS
 from flask import Flask, jsonify, request
 from s3 import s3_connection, s3_put_object, s3_get_object
 import os
@@ -69,12 +70,14 @@ def download():
     '''
     
     #테스트용
-    object_name="image/img0.jpg"
+    object_name="image/img2.jpg"
     # 파일 다운로드하면서 바로 가능한가?
     s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
+    print("1")
     FL.db_check()
+    print("2")
     FL.login()
-    
+    print("3")
     return "new image.jpg"
     
     ''' 

@@ -15,16 +15,14 @@ class flasklogin():    # 구 Thread 현 flasklogin
         detector = dlib.get_frontal_face_detector()
         #cam = cv2.VideoCapture(0, cv2.CAP_DSHOW) 삭제?
         
-        count = 0
-        #user_list = np.empty(shape=self.user_num)
+        #count = 0
         self.l = [0 for i in range(4)]
-        #while self.working:
         frame = cv2.imread('./image/temp.jpg',1)
         #cv2.imshow('VideoFrame', frame) #사진 보이기 테스트
         #cv2.waitKey(1000)
         face = detector(frame)
         user_list = np.empty(shape=self.user_num)
-        print("hell")
+        print(self.user_num)
         for f in face:
             # dlib으로 얼굴 검출
             cv2.rectangle(frame, (f.left(), f.top()), (f.right(), f.bottom()), (0, 0, 255), 1)
@@ -41,13 +39,14 @@ class flasklogin():    # 구 Thread 현 flasklogin
             image = np.expand_dims(image, 0)
             print(image.shape)
             a = load_model.predict(image)
-            # print(a[0][np.argmax(a)])
-            if count < 100:
-                count += 1
-                user_list += a[0]
-                print(count)
+            print(a[0][np.argmax(a)])
+            #if count < 100:
+            #    count += 1
+            user_list += a[0]
+            #print(count)
         else:
-            print("얼굴이 없습니다.")
+            print("얼굴이 없습니다")
+            return 0
                   
         frame = cv2.flip(frame, 1) #좌우반전
         cvt_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) #색상공간변환함수
@@ -58,6 +57,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
             for i in range(4):
                 self.l[i] = np.where(user_list==a[i])[0][0]
             return 
+    
         
     def db_check(self):
         try:
