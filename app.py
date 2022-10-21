@@ -5,6 +5,7 @@ import os
 import boto3
 from dotenv import load_dotenv
 from newlogin import flasklogin
+from faceCheck import check
 
 app = Flask(__name__)
 
@@ -29,6 +30,18 @@ def home(lang):
 @app.route('/route/<lang>')
 def route(lang):
     return jsonify({"lang":lang})
+
+@app.route('/faceCheck', methods=['GET','POST'])
+def faceCheck():
+    file_path = "./image/check.jpg"
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    object_name = "image/check.jpg"
+    # 파일 다운로드하면서 바로 가능한가?
+    s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
+    result = check();
+    return jsonify({"result": result})
 
 
 @app.route('/fileUpload', methods=['POST'])
