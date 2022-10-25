@@ -59,29 +59,30 @@ def upload():
 @app.route('/fileDownload', methods=['GET','POST'])
 def download():
     FL=flasklogin()
-    '''
-    object_name=request.args.get('object_name')
-    file_path="./uploads/"
-    files=os.listdir("./uploads")
-    for x in files:
-        if(x==object_name):
-            sw=1
-            s3.download_file(AWS_S3_BUCKET_NAME, object_name, file_path)
-        else:   
-            print("파일이 없습니다")
-    '''       
+   
     file_path="./image/temp.jpg"
     
     if os.path.exists(file_path):
         os.remove(file_path)
-    '''원래코드 
+        
+
+        
+    # electron연결용
     object_name=request.args.get('object_name')
+    #테스트용
+    #object_name="image/check.jpg"
     # 파일 다운로드하면서 바로 가능한가?
-    tempjpg=s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
-    login.flasklogin.run(tempjpg)
+    s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
+    print("1")
+    FL.db_check()
+    print("2")
+    FL.login()
+    print("3")
+    FL.loginDB()
     return "Hello, World!"
+
+    S
     '''
-    
     #테스트용
     object_name="image/img2.jpg"
     # 파일 다운로드하면서 바로 가능한가?
@@ -91,8 +92,10 @@ def download():
     print("2")
     FL.login()
     print("3")
+    FL.loginDB()
+    print(FL.predict_list)
     return "new image.jpg"
-    
+    '''
     ''' 
     테스트용
     object_name=request.args.get('object_name')

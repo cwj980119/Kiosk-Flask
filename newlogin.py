@@ -48,6 +48,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         #cvt_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) #색상공간변환함수
         #h, w, c = cvt_frame.shape
         
+
         a = np.sort(user_list)[::-1]
         for i in range(4):
             self.l[i] = np.where(user_list==a[i])[0][0]
@@ -57,6 +58,19 @@ class flasklogin():    # 구 Thread 현 flasklogin
         print(self.l)
         #self.working = True
         return
+    
+    def loginDB(self):
+        self.predict_list=[]
+        print(self.l)
+        sql = "select * from sho where memberID =" + str(self.l[0]+1)
+        self.curs.execute(sql)
+        self.predict_list.append(self.curs.fetchone())
+        sql = "select * from sho where memberID in ("+str(self.l[1]+1)+"," + str(self.l[2]+1)+"," + str(self.l[3]+1)+")"
+        self.curs.execute(sql)
+        self.predict_list.append(self.curs.fetchall())
+        print(self.predict_list)
+    
+
         
     def db_check(self):
         try:
@@ -97,18 +111,7 @@ class Login():
             self.close()
 
 
-    def start_check(self):
-        if(self.worker.working):
-            self.predict_list = []
-            print(self.worker.l)
-            sql = "select * from sho where memberID =" + str(self.worker.l[0]+1)
-            self.curs.execute(sql)
-            self.predict_list.append(self.curs.fetchone())
-            sql = "select * from sho where memberID in ("+str(self.worker.l[1]+1)+"," + str(self.worker.l[2]+1)+"," + str(self.worker.l[3]+1)+")"
-            self.curs.execute(sql)
-            self.predict_list.append(self.curs.fetchall())
-            print(self.predict_list)
-            self.check =check_login.Check(self.predict_list, self)
+    
 
     def succ(self, user):
         self.close()
