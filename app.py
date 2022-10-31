@@ -1,10 +1,11 @@
 from sre_parse import FLAGS
 from flask import Flask, jsonify, request
-from s3 import s3_connection, s3_put_object, s3_get_object
+from s3 import s3_connection, s3_put_object, s3_get_object, s3_get_folder
 import os
 import boto3
 from dotenv import load_dotenv
 from newlogin import flasklogin
+from newregister import flaskRegister
 from faceCheck import check
 import cv2
 
@@ -81,7 +82,7 @@ def download():
     FL.loginDB()
     return "Hello, World!"
 
-    S
+    
     '''
     #테스트용
     object_name="image/img2.jpg"
@@ -116,7 +117,45 @@ def loginandupload():
     
 @app.route('/register', methods=['GET','POST'])
 def register():
+    FR=flaskRegister()
     fullname = request.args.get('fullname')
     password = request.args.get('password')
     
-    return "regist"
+    
+    return "register"
+
+@app.route('/RfileDownload', methods=['GET','POST'])
+def Rdownload():
+    FR=flaskRegister()
+    
+    for i in range(10):
+        file_path="./image/temp"+str(i)+".jpg"
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            
+        # electron연결용
+        #object_name=request.args.get('object_name')
+        #테스트용
+        object_name="signup/10/"+str(i)+".jpg"
+        # 파일 다운로드하면서 바로 가능한가?
+        s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
+    
+    FR.flaskframenumber()
+    return "Hello, World!"
+    
+    
+    
+    '''  
+    # electron연결용
+    object_name=request.args.get('object_name')
+    #테스트용
+    #object_name="image/img2.jpg"
+    # 파일 다운로드하면서 바로 가능한가?
+    s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
+    print("1")
+    FL.db_check()
+    print("2")
+    FL.login()
+    FL.loginDB()
+    '''
+    return "Hello, World!"

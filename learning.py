@@ -3,30 +3,45 @@ from keras.models import Model
 from keras.layers import *
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint
-
 import os
-import matplotlib.pyplot as plt
 
-
-class learn_model():
+class Make_model():
     def __init__(self):
-        path = './image/train'  #경로지정
+        return("makemodel")
+
+    def makemodel(self):
+        history = self.parent.my_model.fit(self.train_generator,
+                                         steps_per_epoch=len(self.train_generator),
+                                         epochs=self.epochs,
+                                         validation_data=self.val_generator,
+                                         validation_steps=len(self.val_generator),
+                                         callbacks=[self.checkpoint])
+        #이름 변경
+        self.my_model.save('face_model.h5')
+        print("model saved")
+
+
+class Learnig():
+    def __init__(self):
+        #경로수정
+        path = './image/dataset/train'
         file_list = os.listdir(path)
         self.len = len(file_list)
-        print("init")
-        
-    def l(self):
+        self.init_model()
+   
+    def init_model(self):
+        #수정필요
         base_model = InceptionResNetV1(weights_path='./facenet_keras_weights.h5',
-                                           input_shape=(224, 224, 3),
-                                           dropout_keep_prob=0.8)
+                                       input_shape=(224, 224, 3),
+                                       dropout_keep_prob=0.8)
 
         for layer in base_model.layers[:]:
             layer.trainable = False
 
         #base_model.summary()
-        print(self.len)
+
         classes = self.len
-        epochs = 20
+        self.epochs = 20
         # epochs = 500
         targetx = 224
         targety = 224
@@ -40,7 +55,7 @@ class learn_model():
         x = Dropout(0.5)(x)
         predictions = Dense(classes, activation='softmax')(x)
 
-        my_model = Model(inputs=base_model.input, outputs=predictions)
+        self.my_model = Model(inputs=base_model.input, outputs=predictions)
         #my_model.summary()
 
         # making the instance of 'ImageDataGenerator'
@@ -59,59 +74,28 @@ class learn_model():
         train_dir = './image/train'
         val_dir = './image/test'
 
-        train_generator = train_datagen.flow_from_directory(train_dir,
+        self.train_generator = train_datagen.flow_from_directory(train_dir,
                                                             batch_size=200,
                                                             target_size=(targetx, targety),
                                                             shuffle=True,
                                                             class_mode='categorical')
 
-        val_generator = val_datagen.flow_from_directory(val_dir,
+        self.val_generator = val_datagen.flow_from_directory(val_dir,
                                                         batch_size=100,
                                                         target_size=(targetx, targety),
                                                         shuffle=True,
                                                         class_mode='categorical')
         checkpoint_dir = "./model"
         os.makedirs(checkpoint_dir, exist_ok=True)
-        checkpoint = ModelCheckpoint(filepath=checkpoint_dir + "/" + "weight_1.hdf5",
+        self.checkpoint = ModelCheckpoint(filepath=checkpoint_dir + "/" + "weight_1.hdf5",
                                      monitor='loss',
                                      mode='min',
                                      save_best_only=True)
 
-        my_model.compile(optimizer='adam',
+        self.my_model.compile(optimizer='adam',
                          loss="categorical_crossentropy",
                          metrics=["accuracy"])
 
-        history = my_model.fit_generator(train_generator,
-                                           steps_per_epoch=len(train_generator),
-                                           epochs=epochs,
-                                           validation_data=val_generator,
-                                           validation_steps=len(val_generator),
-                                           callbacks=[checkpoint])
-        print("2")
-        my_model.save('face_model.h5')
-
-        # visualizing
-        # history.history
-        # acc = history.history['accuracy']
-        # val_acc = history.history['val_accuracy']
-        # loss = history.history['loss']
-        # val_loss = history.history['val_loss']
-        #
-        # epochs = range(1, len(acc) + 1)
-        #
-        # plt.plot(epochs, acc, 'bo', label='Training acc')
-        # plt.plot(epochs, val_acc, 'b', label='Validation acc')
-        # plt.title('Accuracy')
-        # plt.legend()
-        # plt.figure()
-        #
-        # plt.plot(epochs, loss, 'ro', label='Training loss')
-        # plt.plot(epochs, val_loss, 'r', label='Validation loss')
-        # plt.title('Loss')
-        # plt.legend()
-        #
-        # plt.show()
-
-if __name__ == '__main__':
-    a = learn_model()
-    a.l()
+        print("1")
+        self.learn_model()
+    

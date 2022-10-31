@@ -26,7 +26,8 @@ class Cam():
         self.file_list=[]
         self.count = 0
         self.pic = False
-        frame = cam.read()
+        
+        frame = cv2.imread('./image/temp.jpg',1) #??
         face = detector(frame)
         for f in face:
             # dlib으로 얼굴 검출
@@ -49,6 +50,7 @@ class Cam():
                 self.file_list.append([file_name_path,crop])
                 self.count += 1
                 self.pic = False
+        '''
         frame = cv2.flip(frame, 1)
         cvt_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         h, w, c = cvt_frame.shape
@@ -57,6 +59,7 @@ class Cam():
         self.parent.ui.label.move(130,100)
         self.parent.ui.label.resize(round(width), round(height))
         self.parent.ui.label.setPixmap(pixmap)
+        '''
 
 class Take_pic():
     def __init__(self,main,db_name,db_password,db_birthdate,db_gender,db_phonenumber):
@@ -121,60 +124,5 @@ class Take_pic():
         conn = pymysql.connect(host=host, user=username, password=password, db=database, port=port)
         return (conn)
 
-    def sequence(self):
-        if(self.ask):
-            if(self.flow==0):
-                self.ui.name.setText("정면을 봐 주세요.")
-                self.ask = False
-            elif(self.flow==1):
-                self.ui.name.setText("이제 왼쪽을 봐 주세요")
-                self.ask = False
-            elif(self.flow==2):
-                self.ui.name.setText("이제 오른쪽을 봐 주세요")
-                self.ask = False
-            elif (self.flow == 3):
-                self.ui.name.setText("위쪽을 봐 주세요")
-                self.ask = False
-            elif (self.flow == 4):
-                self.ui.name.setText("아래쪽을 봐 주세요")
-                self.ask = False
-            elif (self.flow == 5):
-                self.ui.name.setText("웃어주세요")
-                self.ask = False
-            elif (self.flow == 6):
-                self.ui.name.setText("아~")
-                self.ask = False
-            elif (self.flow == 7):
-                self.ui.name.setText("에~")
-                self.ask = False
-            elif (self.flow == 8):
-                self.ui.name.setText("이~")
-                self.ask = False
-            elif (self.flow == 9):
-                self.ui.name.setText("오~")
-                self.ask = False
-            elif (self.flow == 10):
-                self.ui.name.setText("우~")
-                self.ask = False
-            else:
-                self.ui.name.setText("촬영이 종료되었습니다.")
-                self.timer.stop()
-                self.close_cam()
-                self.db_commit()
-        else:
-            if(self.cnt == 0):
-                self.ui.name.setText("3")
-                self.cnt +=1
-            elif(self.cnt == 1):
-                self.ui.name.setText("2")
-                self.cnt += 1
-            elif(self.cnt == 2):
-                self.ui.name.setText("1")
-                self.cnt += 1
-            elif(self.cnt == 3):
-                self.cnt+=1
-                self.worker.pic = True
-            elif(self.cnt == 4):
-                self.cnt = 0
-                self.flow += 1
-                self.ask = True
+   
+    
