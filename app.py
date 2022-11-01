@@ -8,6 +8,7 @@ from newlogin import flasklogin
 from newregister import flaskRegister
 from faceCheck import check
 import cv2
+from learning import Learnig
 
 app = Flask(__name__)
 
@@ -119,10 +120,17 @@ def loginandupload():
 def register():
     FR=flaskRegister()
     #회원가입용 사진을 test/train으로 분리
-    FR.flasklearning()
+    #FR.flasklearning()
     
     
     return "register"
+
+@app.route('/test', methods=['GET','POST'])
+def test():
+    ML=Learnig()
+    ML.init_model()
+    
+    return "test"
 
 @app.route('/RfileDownload', methods=['GET','POST'])
 def Rdownload():

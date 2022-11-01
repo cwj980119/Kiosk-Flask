@@ -46,6 +46,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         for f in face:
             # dlib으로 얼굴 검출
             cv2.rectangle(frame, (f.left(), f.top()), (f.right(), f.bottom()), (0, 0, 255), 1)
+            
         if len(face) == 1:
             crop = frame[f.top():f.bottom(), f.left():f.right()]
             crop = cv2.resize(crop, (224, 224))

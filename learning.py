@@ -27,18 +27,18 @@ class Learnig():
         path = './image/train'
         file_list = os.listdir(path)
         self.len = len(file_list)
-        self.init_model()
+        
    
     def init_model(self):
         #수정필요
-        base_model = InceptionResNetV1(weights_path='./facenet_keras_weights.h5',
+        base_model = InceptionResNetV1(weights_path='./tl_20_cropped_e20_b200.h5',
                                        input_shape=(224, 224, 3),
                                        dropout_keep_prob=0.8)
 
         for layer in base_model.layers[:]:
             layer.trainable = False
-
-        #base_model.summary()
+        #주석 건드림
+        base_model.summary()
 
         classes = self.len
         self.epochs = 20
