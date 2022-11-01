@@ -10,7 +10,7 @@ class Make_model():
         return("makemodel")
 
     def makemodel(self):
-        history = self.parent.my_model.fit(self.train_generator,
+        history = self.my_model.fit(self.train_generator,
                                          steps_per_epoch=len(self.train_generator),
                                          epochs=self.epochs,
                                          validation_data=self.val_generator,
@@ -24,7 +24,7 @@ class Make_model():
 class Learnig():
     def __init__(self):
         #경로수정
-        path = './image/dataset/train'
+        path = './image/train'
         file_list = os.listdir(path)
         self.len = len(file_list)
         self.init_model()
@@ -97,5 +97,4 @@ class Learnig():
                          metrics=["accuracy"])
 
         print("1")
-        self.learn_model()
-    
+        Make_model.makemodel()

@@ -5,18 +5,18 @@ import numpy as np
 from keras.models import load_model
 import pymysql
 from dotenv import load_dotenv
-
+import learning
 
 class flaskRegister():
     
     def __init__(self):
-        '''
-        self.path_train = './dataset/train/'+str(self.user_num)
-        self.path_test = './dataset/test/'+str(self.user_num)
+        
+        self.path_train = './image/train/'+str(self.user_num)
+        self.path_test = '.image/test/'+str(self.user_num)
         if not os.path.exists(self.path_train):
             os.makedirs(self.path_train)
             os.makedirs(self.path_test)
-        '''
+        
             
     def flaskframenumber(self):
         detector = dlib.get_frontal_face_detector()
@@ -69,8 +69,7 @@ class flaskRegister():
             cvt_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             h, w, c = cvt_frame.shape
             '''
-            
-        
+        learning.Learnig.init_model()
                 
             
     '''   
@@ -121,11 +120,3 @@ class flaskRegister():
         return 
     '''
     
-    def createFolder(directory):
-        try:
-            if not os.path.exists(directory):
-            os.makedirs(directory+'/train')
-            os.makedirs(directory+'/test')
-        except OSError:
-            print('Error: Creating directory. ' + directory)
-        

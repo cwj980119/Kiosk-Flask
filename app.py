@@ -118,16 +118,17 @@ def loginandupload():
 @app.route('/register', methods=['GET','POST'])
 def register():
     FR=flaskRegister()
-    fullname = request.args.get('fullname')
-    password = request.args.get('password')
+    #회원가입용 사진을 test/train으로 분리
+    FR.flasklearning()
     
     
     return "register"
 
 @app.route('/RfileDownload', methods=['GET','POST'])
 def Rdownload():
+    #회원가입용 사진 10장 받기
     FR=flaskRegister()
-    
+    #10장 컴퓨터에 저장
     for i in range(10):
         file_path="./image/temp"+str(i)+".jpg"
         if os.path.exists(file_path):
@@ -137,9 +138,8 @@ def Rdownload():
         #object_name=request.args.get('object_name')
         #테스트용
         object_name="signup/10/"+str(i)+".jpg"
-        # 파일 다운로드하면서 바로 가능한가?
         s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
-    
+    #사진 당 얼굴 수 출력
     FR.flaskframenumber()
     return "Hello, World!"
     
