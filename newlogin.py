@@ -82,6 +82,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchall())
         print(self.predict_list)
+        return self.predict_list
         
     def loginanddo(self):
     #이름을 하나 받으면 이름으로 db검색하여 메뉴를 출력하고 tempcrop을 모델로 돌린뒤 모델은 저장하고 s3에 사진 저장 후 tempcrop삭제

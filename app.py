@@ -72,6 +72,7 @@ def download():
         
     # electron연결용
     object_name=request.args.get('object_name')
+    print(object_name)
     #테스트용
     #object_name="image/img2.jpg"
     # 파일 다운로드하면서 바로 가능한가?
@@ -80,8 +81,8 @@ def download():
     FL.db_check()
     print("2")
     FL.login()
-    FL.loginDB()
-    return "Hello, World!"
+    result = FL.loginDB()
+    return result
 
     
     '''
