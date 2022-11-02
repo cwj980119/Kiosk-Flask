@@ -72,18 +72,18 @@ def download():
 
         
     # electron연결용
-    #object_name=request.args.get('object_name')
+    object_name=request.args.get('object_name')
     #print(object_name)
     #테스트용
-    object_name="image/img2.jpg"
+    #object_name="image/img2.jpg"
     # 파일 다운로드하면서 바로 가능한가?
     s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
     print("1")
     FL.db_check()
     print("2")
     FL.login()
-    result = FL.loginDB()
-    return result
+    return FL.loginDB()
+
 
     
     '''
