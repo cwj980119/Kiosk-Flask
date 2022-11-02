@@ -63,7 +63,7 @@ def s3_get_object(s3, bucket, object_name, file_name):
     
     return True
 
-def s3_get_folder(s3, bucket, object_name, folder_name):
+def s3_get_folder(s3, bucket):
     '''
     s3 bucket에서 지정 파일 다운로드
     :param s3: 연결된 s3 객체(boto3 client)
@@ -72,11 +72,20 @@ def s3_get_folder(s3, bucket, object_name, folder_name):
     :param file_name: 저장할 파일 명(path)
     :return: 성공 시 True, 실패 시 False 반환
     '''
+    prefix = 'signup/dataset'
+    for object in bucket.objects.filter(Prefix = 'signup/dataset'):
+        if object.key == prefix:
+            os.makedirs(os.path.dirname(object.key), exist_ok=True)
+            continue;
+        bucket.download_file(object.key, object.key)
+    '''
     try:
         s3.download_file(bucket, object_name, folder_name)
         print("done")
     except Exception as e:
         print(e)
         return False
+    '''
     
     return True
+

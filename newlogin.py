@@ -5,6 +5,7 @@ import pymysql
 from dotenv import load_dotenv
 import os
 from flask import Flask, jsonify, request
+import json
 
 load_model = load_model('tl_20_cropped_e20_b200.h5')
 #load_model = load_model('face_model.h5')
@@ -75,18 +76,34 @@ class flasklogin():    # 구 Thread 현 flasklogin
     def loginDB(self):
         
         self.predict_list=[]
-        print(self.l)
+        #print(self.l)
         sql = "select * from sho where memberID =" + str(self.l[0]+1)
         self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchone())
+        sql = "select * from sho where memberID =" + str(self.l[1]+1)
+        self.curs.execute(sql)
+        self.predict_list.append(self.curs.fetchone())
+        sql = "select * from sho where memberID =" + str(self.l[2]+1)
+        self.curs.execute(sql)
+        self.predict_list.append(self.curs.fetchone())
+        sql = "select * from sho where memberID =" + str(self.l[3]+1)
+        self.curs.execute(sql)
+        self.predict_list.append(self.curs.fetchone())
+        '''
         sql = "select * from sho where memberID in ("+str(self.l[1]+1)+"," + str(self.l[2]+1)+"," + str(self.l[3]+1)+")"
         self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchall())
+        '''
         print(self.predict_list)
-        
-        return jsonify(self.predict_list)
-        #return self.predict_list
-        
+
+        result0=jsonify({"id":self.predict_list[0][0],"name": self.predict_list[0][1],"password":self.predict_list[0][2],
+                 "Date":self.predict_list[0][3],"gender":self.predict_list[0][4],"phonenumber":self.predict_list[0][5]},{"id":self.predict_list[1][0],"name": self.predict_list[1][1],"password":self.predict_list[1][2],
+                 "Date":self.predict_list[1][3],"gender":self.predict_list[1][4],"phonenumber":self.predict_list[1][5]},{"id":self.predict_list[2][0],"name": self.predict_list[2][1],"password":self.predict_list[2][2],
+                 "Date":self.predict_list[2][3],"gender":self.predict_list[2][4],"phonenumber":self.predict_list[2][5]},{"id":self.predict_list[3][0],"name": self.predict_list[3][1],"password":self.predict_list[3][2],
+                 "Date":self.predict_list[3][3],"gender":self.predict_list[3][4],"phonenumber":self.predict_list[3][5]})
+        return result0
+          
+       
     def loginanddo(self):
     #이름을 하나 받으면 이름으로 db검색하여 메뉴를 출력하고 tempcrop을 모델로 돌린뒤 모델은 저장하고 s3에 사진 저장 후 tempcrop삭제
         
