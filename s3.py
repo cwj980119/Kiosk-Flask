@@ -73,8 +73,9 @@ def s3_get_alldataset(s3,bucket):
     s3_get_folder(s3, AWS_S3_BUCKET_NAME, object_name, file_name)
     '''
     FL=flasklogin()
+    #db연결해서 사람 수 받아야됨
     #usernumber=FL.usernum_check()
-    for i in range(1):
+    for i in range(10):
         
         objectdir1="./image/dataset/test/"+str(i)
         if not os.path.exists(objectdir1):
@@ -86,9 +87,9 @@ def s3_get_alldataset(s3,bucket):
                 os.remove(file_test_name)
             try:
                 s3.download_file(bucket, object_test_name, file_test_name)
-                print("done")
+                print(str(i)+" "+str(j)+" done")
             except Exception as e:
-                print(e)
+                print(str(i)+str(j)+e)
                 return False
             
         objectdir2="./image/dataset/train/"+str(i)
@@ -101,9 +102,9 @@ def s3_get_alldataset(s3,bucket):
                 os.remove(file_train_name)
             try:
                 s3.download_file(bucket, object_train_name, file_train_name)
-                print("done")
+                print(str(i)+" "+str(q)+" done")
             except Exception as e:
-                print(e)
+                print(str(i)+str(q)+e)
                 return False    
     '''        
     for k in range(1):

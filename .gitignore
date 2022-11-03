@@ -1,6 +1,7 @@
 .env
 tl_20_cropped_e20_b200.h5
 flask-key.pem
-facenet_keras_weights.h5
 model
+facenet_keras_weights.h5
+face_model.h5
 image

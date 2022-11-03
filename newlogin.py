@@ -7,8 +7,8 @@ import os
 from flask import Flask, jsonify, request
 import json
 
-load_model = load_model('tl_20_cropped_e20_b200.h5')
-#load_model = load_model('face_model.h5')
+#oad_model = load_model('tl_20_cropped_e20_b200.h5')
+load_model = load_model('face_model.h5')
 
 load_dotenv(verbose=True)
 AWS_RDS_HOST=os.getenv('AWS_RDS_HOST')
@@ -31,7 +31,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         self.l = [0 for i in range(4)]
         print(self.user_num)
     
-        frame = cv2.imread('./image/temp.jpg',1)
+        frame = cv2.imread('./image/temp0.jpg',1)
         face = detector(frame)
         for f in face:
                 # dlib으로 얼굴 검출
@@ -72,10 +72,27 @@ class flasklogin():    # 구 Thread 현 flasklogin
         #h, w, c = cvt_frame.shape
         
         return
-    def modeltest(self):
-        train_dataset="./image/dataset/train"
-        test_dataset="./image/dataset/test"
-        load_model.fit(train_dataset,test_dataset, epochs=20)
+        
+    def crop(self):
+        detector = dlib.get_frontal_face_detector()
+        frame = cv2.imread('./image/temp0.jpg',1)
+        face = detector(frame)
+        for f in face:
+                # dlib으로 얼굴 검출
+            cv2.rectangle(frame, (f.left(), f.top()), (f.right(), f.bottom()), (0, 0, 255), 1)
+        
+        if len(face) == 1:
+            crop = frame[f.top():f.bottom(), f.left():f.right()]
+            crop = cv2.resize(crop, (224, 224))
+            image = np.array(crop)
+            image = image.astype('float32') / 255
+            #print(image.shape)
+            cv2.imwrite('./image/tempcrop.jpg',crop)
+            print("end")
+            
+        else:
+            print("얼굴이 없습니다")
+        return
         
     def loginDB(self):
         

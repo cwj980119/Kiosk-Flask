@@ -5,7 +5,6 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint
 import os
 
-load_model = Model('tl_20_cropped_e20_b200.h5')
 class Make_model():
     def __init__(self):
         return("makemodel")
@@ -32,7 +31,7 @@ class Learnig():
    
     def init_model(self):
         #수정필요
-        base_model = InceptionResNetV1(weights_path='./facene_keras_weights.5',
+        base_model = InceptionResNetV1(weights_path='./facenet_keras_weights.h5',
                                        input_shape=(224, 224, 3),
                                        dropout_keep_prob=0.8)
 

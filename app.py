@@ -128,9 +128,12 @@ def register():
 
 @app.route('/test', methods=['GET','POST'])
 def test():
-    s3_get_alldataset(s3,AWS_S3_BUCKET_NAME)
-    
-    
+    #s3_get_alldataset(s3,AWS_S3_BUCKET_NAME)
+    #ml=Learnig()
+    #ml.init_model()
+    FL=flasklogin()
+    FL.db_check()
+    FL.login()
     return "test"
 
 @app.route('/RfileDownload', methods=['GET','POST'])
