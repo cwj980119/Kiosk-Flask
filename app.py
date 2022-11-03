@@ -1,6 +1,6 @@
 from sre_parse import FLAGS
 from flask import Flask, jsonify, request
-from s3 import s3_connection, s3_put_object, s3_get_object, s3_get_folder
+from s3 import s3_connection, s3_put_object, s3_get_object,s3_get_alldataset
 import os
 import boto3
 from dotenv import load_dotenv
@@ -121,17 +121,15 @@ def loginandupload():
 @app.route('/register', methods=['GET','POST'])
 def register():
     FR=flaskRegister()
-    #회원가입용 사진을 test/train으로 분리
-    #FR.flasklearning()
+ 
     
     
     return "register"
 
 @app.route('/test', methods=['GET','POST'])
 def test():
-    #ML=Learnig()
-    #ML.init_model()
-    s3_get_folder(s3, AWS_S3_BUCKET_NAME)
+    s3_get_alldataset(s3,AWS_S3_BUCKET_NAME)
+    
     
     return "test"
 

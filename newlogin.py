@@ -72,7 +72,11 @@ class flasklogin():    # 구 Thread 현 flasklogin
         #h, w, c = cvt_frame.shape
         
         return
-    
+    def modeltest(self):
+        train_dataset="./image/dataset/train"
+        test_dataset="./image/dataset/test"
+        load_model.fit(train_dataset,test_dataset, epochs=20)
+        
     def loginDB(self):
         
         self.predict_list=[]
@@ -122,6 +126,18 @@ class flasklogin():    # 구 Thread 현 flasklogin
             print(self.user_num)
         except:
             print("DB 연결 실패")
+    def usernum_check(self):
+        try:
+            self.conn = self.connectDB()
+            self.curs = self.conn.cursor()
+            sql1 = "Select max(memberID) from sho"
+            self.curs.execute(sql1)
+            result = self.curs.fetchone()
+            self.user_num = result[0]
+            return(self.user_num+1)
+        except:
+            print("DB 연결 실패")
+            
             
     def connectDB(self):
         

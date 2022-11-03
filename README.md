@@ -7,6 +7,8 @@
 * pip install opencv-python
 * pip install tensorflow
 * pip install pymysql
+* pip install cloudpathlib
+
 ec2
 * sudo apt update
 * sudo apt install python3-pip

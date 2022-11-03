@@ -1,7 +1,9 @@
 # import module
 import boto3
 import os
+#from cloudpathlib import CloudPath
 from dotenv import load_dotenv
+from newlogin import flasklogin
 
 
 load_dotenv(verbose=True)
@@ -63,29 +65,61 @@ def s3_get_object(s3, bucket, object_name, file_name):
     
     return True
 
-def s3_get_folder(s3, bucket):
+def s3_get_alldataset(s3,bucket):
+    #모든 훈련용 데이터 다운
     '''
-    s3 bucket에서 지정 파일 다운로드
-    :param s3: 연결된 s3 객체(boto3 client)
-    :param bucket: 버킷명
-    :param object_name: s3에 저장된 object 명
-    :param file_name: 저장할 파일 명(path)
-    :return: 성공 시 True, 실패 시 False 반환
+    object_name="signup/dataset/test/0/10.jpg"
+    file_name="./image/dataset/test/0/10.jpg"
+    s3_get_folder(s3, AWS_S3_BUCKET_NAME, object_name, file_name)
     '''
-    prefix = 'signup/dataset'
-    for object in bucket.objects.filter(Prefix = 'signup/dataset'):
-        if object.key == prefix:
-            os.makedirs(os.path.dirname(object.key), exist_ok=True)
-            continue;
-        bucket.download_file(object.key, object.key)
-    '''
-    try:
-        s3.download_file(bucket, object_name, folder_name)
-        print("done")
-    except Exception as e:
-        print(e)
-        return False
-    '''
-    
+    FL=flasklogin()
+    #usernumber=FL.usernum_check()
+    for i in range(1):
+        
+        objectdir1="./image/dataset/test/"+str(i)
+        if not os.path.exists(objectdir1):
+            os.makedirs(objectdir1)
+        for j in range(3):
+            object_test_name="signup/dataset/test/"+str(i)+"/"+str(j)+".jpg"
+            file_test_name="./image/dataset/test/"+str(i)+"/"+str(j)+".jpg"
+            if os.path.exists(file_test_name):
+                os.remove(file_test_name)
+            try:
+                s3.download_file(bucket, object_test_name, file_test_name)
+                print("done")
+            except Exception as e:
+                print(e)
+                return False
+            
+        objectdir2="./image/dataset/train/"+str(i)
+        if not os.path.exists(objectdir2):
+            os.makedirs(objectdir2)
+        for q in range(8):
+            object_train_name="signup/dataset/train/"+str(i)+"/"+str(q)+".jpg"
+            file_train_name="./image/dataset/train/"+str(i)+"/"+str(q)+".jpg"
+            if os.path.exists(file_train_name):
+                os.remove(file_train_name)
+            try:
+                s3.download_file(bucket, object_train_name, file_train_name)
+                print("done")
+            except Exception as e:
+                print(e)
+                return False    
+    '''        
+    for k in range(1):
+        objectdir="./image/dataset/train/"+str(k)
+        if not os.path.exists(objectdir):
+            os.makedirs(objectdir)
+        for q in range(8):
+            object_train_name="signup/dataset/train/"+str(k)+"/"+str(q)+".jpg"
+            file_train_name="./image/dataset/train/"+str(k)+"/"+str(q)+".jpg"
+            if os.path.exists(file_train_name):
+                os.remove(file_train_name)
+            try:
+                s3.download_file(bucket, object_train_name, file_train_name)
+                print("done")
+            except Exception as e:
+                print(e)
+                return False
+    '''      
     return True
-

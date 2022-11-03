@@ -5,6 +5,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint
 import os
 
+load_model = Model('tl_20_cropped_e20_b200.h5')
 class Make_model():
     def __init__(self):
         return("makemodel")
@@ -24,21 +25,21 @@ class Make_model():
 class Learnig():
     def __init__(self):
         #경로수정
-        path = './image/train'
+        path = './image/dataset/train'
         file_list = os.listdir(path)
         self.len = len(file_list)
         
    
     def init_model(self):
         #수정필요
-        base_model = InceptionResNetV1(weights_path='./tl_20_cropped_e20_b200.h5',
+        base_model = InceptionResNetV1(weights_path='./facene_keras_weights.5',
                                        input_shape=(224, 224, 3),
                                        dropout_keep_prob=0.8)
 
         for layer in base_model.layers[:]:
             layer.trainable = False
         #주석 건드림
-        base_model.summary()
+        #base_model.summary()
 
         classes = self.len
         self.epochs = 20
@@ -71,8 +72,8 @@ class Learnig():
         val_datagen = ImageDataGenerator(rescale=1. / 255)
 
         # setting the path of datasets
-        train_dir = './image/train'
-        val_dir = './image/test'
+        train_dir = './image/dataset/train'
+        val_dir = './image/dataset/test'
 
         self.train_generator = train_datagen.flow_from_directory(train_dir,
                                                             batch_size=200,
@@ -97,4 +98,4 @@ class Learnig():
                          metrics=["accuracy"])
 
         print("1")
-        Make_model.makemodel()
+        Make_model.makemodel(self)
