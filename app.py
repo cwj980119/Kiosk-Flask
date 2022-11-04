@@ -1,6 +1,6 @@
 from sre_parse import FLAGS
 from flask import Flask, jsonify, request
-from s3 import s3_connection, s3_put_object, s3_get_object,s3_get_alldataset
+from s3 import s3_connection, s3_put_object, s3_get_object,s3_get_alldataset,s3_get_signupuser_dataset
 import os
 import boto3
 from dotenv import load_dotenv
@@ -59,8 +59,8 @@ def upload():
     else:
         print("파일 저장 실패")
         
-        
-@app.route('/fileDownload', methods=['GET','POST'])
+#fildedownload에서 login으로 이름변경
+@app.route('/login', methods=['GET','POST'])
 def download():
     FL=flasklogin()
    
@@ -78,40 +78,12 @@ def download():
     #object_name="image/img2.jpg"
     # 파일 다운로드하면서 바로 가능한가?
     s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
-    print("1")
+    #print("1")
     FL.db_check()
-    print("2")
+    #print("2")
     FL.login()
     return FL.loginDB()
 
-
-    
-    '''
-    #테스트용
-    object_name="image/img2.jpg"
-    # 파일 다운로드하면서 바로 가능한가?
-    s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
-    print("1")
-    FL.db_check()
-    print("2")
-    FL.login()
-    print("3")
-    FL.loginDB()
-    print(FL.predict_list)
-    return "new image.jpg"
-    '''
-    ''' 
-    테스트용
-    object_name=request.args.get('object_name')
-    file_path="./uploads/"
-    files=os.listdir("./uploads")
-    for x in files:
-        if(x==object_name):
-            sw=1
-            s3.download_file(AWS_S3_BUCKET_NAME, object_name, file_path)
-        else:   
-            print("파일이 없습니다")         
-    '''
 
 @app.route('/login', methods=['GET','POST'])
 def loginandupload():
@@ -121,9 +93,7 @@ def loginandupload():
 @app.route('/register', methods=['GET','POST'])
 def register():
     FR=flaskRegister()
- 
-    
-    
+
     return "register"
 
 @app.route('/test', methods=['GET','POST'])
@@ -135,6 +105,20 @@ def test():
     FL.db_check()
     FL.login()
     return "test"
+
+@app.route('/alldataset_model', methods=['GET','POST'])
+def alldatasetmodel():
+    s3_get_alldataset(s3,AWS_S3_BUCKET_NAME)
+    ml=Learnig()
+    ml.init_model()
+    return "alldatasetmodel complete"
+
+@app.route('/signup_dataset_model', methods=['GET','POST'])
+def alldatasetmodel():
+    s3_get_signupuser_dataset(s3,AWS_S3_BUCKET_NAME)
+    ml=Learnig()
+    ml.init_model()
+    return "signup user datasetmodel complete"
 
 @app.route('/RfileDownload', methods=['GET','POST'])
 def Rdownload():
@@ -156,18 +140,4 @@ def Rdownload():
     return "Hello, World!"
     
     
-    
-    '''  
-    # electron연결용
-    object_name=request.args.get('object_name')
-    #테스트용
-    #object_name="image/img2.jpg"
-    # 파일 다운로드하면서 바로 가능한가?
-    s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
-    print("1")
-    FL.db_check()
-    print("2")
-    FL.login()
-    FL.loginDB()
-    '''
-    return "Hello, World!"
+   

@@ -23,10 +23,9 @@ class flasklogin():    # 구 Thread 현 flasklogin
         print("hello")
         
     def login(self):  # 구 run 현
-        print("1")
+        #print("1")
         detector = dlib.get_frontal_face_detector()
         #cam = cv2.VideoCapture(0, cv2.CAP_DSHOW) 삭제?
-        
         user_list = np.empty(shape=self.user_num)
         self.l = [0 for i in range(4)]
         print(self.user_num)
@@ -126,11 +125,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
                   "3" : {"id":self.predict_list[3][0],"name": self.predict_list[3][1],"password":self.predict_list[3][2],
                  "Date":self.predict_list[3][3],"gender":self.predict_list[3][4],"phonenumber":self.predict_list[3][5]}})
           
-       
-    def loginanddo(self):
-    #이름을 하나 받으면 이름으로 db검색하여 메뉴를 출력하고 tempcrop을 모델로 돌린뒤 모델은 저장하고 s3에 사진 저장 후 tempcrop삭제
-        
-        return
+    
         
     def db_check(self):
         try:
