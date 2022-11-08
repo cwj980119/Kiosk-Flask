@@ -9,9 +9,11 @@ from newregister import flaskRegister
 from faceCheck import check
 import cv2
 from learning import Learnig
+import redis
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
+app.debug=True
 
 load_dotenv(verbose=True)
 AWS_S3_BUCKET_REGION=os.getenv('AWS_S3_BUCKET_REGION')
@@ -20,6 +22,14 @@ AWS_ACCESS_KEY=os.getenv('AWS_ACCESS_KEY')
 AWS_SECRET_ACCESS_KEY=os.getenv('AWS_SECRET_ACCESS_KEY')
 
 s3 = s3_connection()
+
+def stream_message(channel):
+    r = redis.Redis()
+    p = r.pubsub()
+    p.subscribe(channel)
+    for message in p.listen():
+        if message['type'] == 'message':
+            yield 'data: ' + json.dumps(message['data'].decode()) + '\n\n'
 
 @app.route('/')
 def hello():
