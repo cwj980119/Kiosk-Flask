@@ -27,4 +27,5 @@ ec2
 * sudo apt-get install pkg-config
 * sudo apt install python3-opencv
 * sudo apt install python3-venv
-* pip3 install --upgrade tensorflow
+* pip3 install --user --upgrade tensorflow --no-cache-dir
+* sudo apt install python3-h5py

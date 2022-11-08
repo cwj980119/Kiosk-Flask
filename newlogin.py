@@ -8,7 +8,7 @@ from flask import Flask, jsonify, request
 import json
 
 #oad_model = load_model('tl_20_cropped_e20_b200.h5')
-load_model = load_model('face_model.h5')
+load_model = load_model("face_model.h5")
 
 load_dotenv(verbose=True)
 AWS_RDS_HOST=os.getenv('AWS_RDS_HOST')
