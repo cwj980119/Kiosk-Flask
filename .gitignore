@@ -4,3 +4,5 @@ flask-key.pem
 model
 facenet_keras_weights.h5
 image
+*.pyc
+__pycache__
