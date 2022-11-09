@@ -23,6 +23,7 @@ AWS_SECRET_ACCESS_KEY=os.getenv('AWS_SECRET_ACCESS_KEY')
 
 s3 = s3_connection()
 
+'''
 def stream_message(channel):
     r = redis.Redis()
     p = r.pubsub()
@@ -30,6 +31,7 @@ def stream_message(channel):
     for message in p.listen():
         if message['type'] == 'message':
             yield 'data: ' + json.dumps(message['data'].decode()) + '\n\n'
+'''
 
 @app.route('/')
 def hello():
@@ -123,8 +125,9 @@ def alldatasetmodel():
     ml.init_model()
     return "alldatasetmodel complete"
 
+
 @app.route('/signup_dataset_model', methods=['GET','POST'])
-def alldatasetmodel():
+def signupdatasetmodel():
     s3_get_signupuser_dataset(s3,AWS_S3_BUCKET_NAME)
     ml=Learnig()
     ml.init_model()
