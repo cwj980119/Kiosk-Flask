@@ -10,11 +10,17 @@ from faceCheck import check
 import cv2
 from learning import Learnig
 import redis
+import time
+import json
+from celery import Celery
 
 app = Flask(__name__)
-app.config['JSON_AS_ASCII'] = False
-app.run(host="0.0.0.0", port="5000", debug=True)
-#app.debug=True
+
+
+BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+celery = Celery('app', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
+
 
 load_dotenv(verbose=True)
 AWS_S3_BUCKET_REGION=os.getenv('AWS_S3_BUCKET_REGION')
@@ -33,6 +39,18 @@ def stream_message(channel):
         if message['type'] == 'message':
             yield 'data: ' + json.dumps(message['data'].decode()) + '\n\n'
 '''
+
+
+
+@celery.task()
+def celery_make_model():
+    ml=Learnig()
+    ml.init_model()
+    
+@app.route('/celery_process', methods=['GET'])
+def deleteMessage():
+    task = celery_make_model()
+    return ("celery_model complete")
 
 @app.route('/')
 def hello():
@@ -155,5 +173,27 @@ def Rdownload():
     #사진 당 얼굴 수 출력
     FR.flaskframenumber()
     return "Hello, World!"
+'''
+@app.route("/send", methods=["GET"])
+def send():
+    conn_redis = get_redis()
+	temp = conn_redis.get('make_model_progress')
+    if temp is None: temp = {}
+	else: temp = json.loads(temp)
+	task = make_model_process.apply_async()
+	temp[training_id] = task.id
+
+	conn_redis.set('make_model-process', json.dumps(temp))
+	return jsonify({"error": 0})
+
+
+@app.route("/progress", methods=["POST"])
+def get_progress():
     
-    
+	task = mail_send_process.AsyncResult(request.form['task_id'])
+	if task.state == 'PENDING':
+		response = {'state': task.state, 'current': 0, 'total': 1}
+	elif task.state != 'FAILURE':
+		response = {'state': task.state, 'current': task.info.get('current', 0), 'total': task.info.get('total', 1)}
+	return jsonify(response)
+'''
