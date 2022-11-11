@@ -30,7 +30,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         self.l = [0 for i in range(4)]
         print(self.user_num)
     
-        frame = cv2.imread('./image/temp0.jpg',1)
+        frame = cv2.imread('./image/temp.jpg',1)
         face = detector(frame)
         for f in face:
                 # dlib으로 얼굴 검출
@@ -52,9 +52,9 @@ class flasklogin():    # 구 Thread 현 flasklogin
             user_list = a[0]
             print(a[0])
             print(user_list)
-            cv2.imshow('VideoFrame', crop) #사진 보이기 테스트
-            cv2.waitKey(1000)
-            cv2.imwrite('./image/tempcrop.jpg',crop)
+            #cv2.imshow('VideoFrame', crop) #사진 보이기 테스트
+            #cv2.waitKey(1000)
+            #cv2.imwrite('./image/tempcrop.jpg',crop)
             a = np.sort(user_list)[::-1]
             for i in range(4):
                 self.l[i] = np.where(user_list==a[i])[0][0]

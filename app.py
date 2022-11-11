@@ -13,7 +13,8 @@ import redis
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
-app.debug=True
+app.run(host="0.0.0.0", port="5000", debug=True)
+#app.debug=True
 
 load_dotenv(verbose=True)
 AWS_S3_BUCKET_REGION=os.getenv('AWS_S3_BUCKET_REGION')
@@ -97,9 +98,6 @@ def download():
     return FL.loginDB()
 
 
-@app.route('/login', methods=['GET','POST'])
-def loginandupload():
-    fullname=request.args.get('fullname')
     
     
 @app.route('/register', methods=['GET','POST'])
@@ -124,6 +122,12 @@ def alldatasetmodel():
     ml=Learnig()
     ml.init_model()
     return "alldatasetmodel complete"
+
+@app.route('/make_model', methods=['GET','POST'])
+def make_model():
+    ml=Learnig()
+    ml.init_model()
+    return "make_model complete"
 
 
 @app.route('/signup_dataset_model', methods=['GET','POST'])
@@ -153,4 +157,3 @@ def Rdownload():
     return "Hello, World!"
     
     
-   
