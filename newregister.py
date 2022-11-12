@@ -13,7 +13,7 @@ class flaskRegister():
     def __init__(self):
         
         self.path_train = './image/train/'
-        self.path_test = '.image/test/'
+        self.path_test = './image/test/'
         if not os.path.exists(self.path_train):
             os.makedirs(self.path_train)
             os.makedirs(self.path_test)

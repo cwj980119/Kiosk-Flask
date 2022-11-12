@@ -74,7 +74,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         
     def crop(self):
         detector = dlib.get_frontal_face_detector()
-        frame = cv2.imread('./image/temp0.jpg',1)
+        frame = cv2.imread('./image/temp.jpg',1)
         face = detector(frame)
         for f in face:
                 # dlib으로 얼굴 검출
@@ -92,6 +92,44 @@ class flasklogin():    # 구 Thread 현 flasklogin
         else:
             print("얼굴이 없습니다")
         return
+    
+    def age_gendercheck(self):
+        
+        # 얼굴 탐지 모델 가중치
+        cascade_filename = 'haarcascade_frontalface_alt.xml'
+        # 모델 불러오기
+        cascade = cv2.CascadeClassifier(cascade_filename)
+        MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
+
+        age_net = cv2.dnn.readNetFromCaffe('deploy_age.prototxt','age_net.caffemodel')
+        gender_net = cv2.dnn.readNetFromCaffe('deploy_gender.prototxt','gender_net.caffemodel')
+        age_list = ['(0 ~ 2)','(4 ~ 6)','(8 ~ 12)','(15 ~ 20)','(21 ~ 24)','(25 ~ 29)','(30 ~ 43)','(48 ~ 53)','(60 ~ 100)']
+        gender_list = ['Male', 'Female']
+        
+        frame = cv2.imread('./image/temp.jpg',1)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
+        # cascade 얼굴 탐지 알고리즘 
+        results = cascade.detectMultiScale(gray)        
+
+        for box in results:
+
+            x, y, w, h = box
+            face = frame[int(y):int(y+h),int(x):int(x+h)].copy()
+            blob = cv2.dnn.blobFromImage(face, 1, (227, 227), MODEL_MEAN_VALUES, swapRB=False)
+            
+            # gender detection
+            gender_net.setInput(blob)
+            gender_preds = gender_net.forward()
+            gender = gender_preds.argmax()
+            
+            # Predict age
+            age_net.setInput(blob)
+            age_preds = age_net.forward()
+            age = age_preds.argmax()
+            info = gender_list[gender] +' '+ age_list[age]
+            return jsonify({"gender": gender_list[gender]},{"age":age_list[age]})
+            
+
         
     def loginDB(self):
         

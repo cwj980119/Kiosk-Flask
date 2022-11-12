@@ -7,3 +7,8 @@ face_model.h5
 image
 *.pyc
 __pycache__
+gender_net.caffemodel
+age_net.caffemodel
+deploy_gender.prototxt
+deploy_age.prototxt
+haarcascade_frontalface_alt.xml

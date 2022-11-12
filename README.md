@@ -11,6 +11,10 @@
 * pip install celery //보류
 * pip install redis//보류
 * pip install gunicorn
+* pip install pillow
+* pip install scipy
+* pip install celery
+
 
 ec2
 * sudo apt update 1

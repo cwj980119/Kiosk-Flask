@@ -30,25 +30,13 @@ AWS_SECRET_ACCESS_KEY=os.getenv('AWS_SECRET_ACCESS_KEY')
 
 s3 = s3_connection()
 
-'''
-def stream_message(channel):
-    r = redis.Redis()
-    p = r.pubsub()
-    p.subscribe(channel)
-    for message in p.listen():
-        if message['type'] == 'message':
-            yield 'data: ' + json.dumps(message['data'].decode()) + '\n\n'
-'''
-
-
-
 @celery.task()
 def celery_make_model():
     ml=Learnig()
     ml.init_model()
     
 @app.route('/celery_process', methods=['GET'])
-def deleteMessage():
+def celery_process():
     task = celery_make_model()
     return ("celery_model complete")
 
@@ -93,15 +81,11 @@ def upload():
 #fildedownload에서 login으로 이름변경
 @app.route('/login', methods=['GET','POST'])
 def download():
-    FL=flasklogin()
-   
+    FL=flasklogin()   
     file_path="./image/temp.jpg"
-    
     if os.path.exists(file_path):
         os.remove(file_path)
-        
-
-        
+            
     # electron연결용
     object_name=request.args.get('object_name')
     #print(object_name)
@@ -115,14 +99,6 @@ def download():
     FL.login()
     return FL.loginDB()
 
-
-    
-    
-@app.route('/register', methods=['GET','POST'])
-def register():
-    FR=flaskRegister()
-
-    return "register"
 
 @app.route('/test', methods=['GET','POST'])
 def test():
@@ -141,19 +117,18 @@ def alldatasetmodel():
     ml.init_model()
     return "alldatasetmodel complete"
 
-@app.route('/make_model', methods=['GET','POST'])
-def make_model():
-    ml=Learnig()
-    ml.init_model()
-    return "make_model complete"
-
 
 @app.route('/signup_dataset_model', methods=['GET','POST'])
 def signupdatasetmodel():
     s3_get_signupuser_dataset(s3,AWS_S3_BUCKET_NAME)
-    ml=Learnig()
-    ml.init_model()
+    task = celery_make_model()
     return "signup user datasetmodel complete"
+
+@app.route('/age_gender', methods=['GET','POST'])
+def age_gender():
+    FL=flasklogin()
+    return FL.age_gendercheck()
+    
 
 @app.route('/RfileDownload', methods=['GET','POST'])
 def Rdownload():
@@ -173,27 +148,7 @@ def Rdownload():
     #사진 당 얼굴 수 출력
     FR.flaskframenumber()
     return "Hello, World!"
-'''
-@app.route("/send", methods=["GET"])
-def send():
-    conn_redis = get_redis()
-	temp = conn_redis.get('make_model_progress')
-    if temp is None: temp = {}
-	else: temp = json.loads(temp)
-	task = make_model_process.apply_async()
-	temp[training_id] = task.id
-
-	conn_redis.set('make_model-process', json.dumps(temp))
-	return jsonify({"error": 0})
 
 
-@app.route("/progress", methods=["POST"])
-def get_progress():
-    
-	task = mail_send_process.AsyncResult(request.form['task_id'])
-	if task.state == 'PENDING':
-		response = {'state': task.state, 'current': 0, 'total': 1}
-	elif task.state != 'FAILURE':
-		response = {'state': task.state, 'current': task.info.get('current', 0), 'total': task.info.get('total', 1)}
-	return jsonify(response)
-'''
+if __name__ == "__main__":
+    app.run(host="0.0.0.0")
