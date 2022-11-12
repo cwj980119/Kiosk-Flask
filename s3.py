@@ -69,8 +69,9 @@ def s3_get_alldataset(s3,bucket):
     #모든 훈련용 데이터 다운
     FL=flasklogin()
     #db연결해서 사람 수 받아야됨
-    #usernumber=FL.usernum_check()
-    for i in range(10):
+    usernumber=FL.usernum_check()-1
+    print(usernumber)
+    for i in range(usernumber):
         
         objectdir1="./image/dataset/test/"+str(i)
         if not os.path.exists(objectdir1):
@@ -90,7 +91,7 @@ def s3_get_alldataset(s3,bucket):
         objectdir2="./image/dataset/train/"+str(i)
         if not os.path.exists(objectdir2):
             os.makedirs(objectdir2)
-        for q in range(8):
+        for q in range(7):
             object_train_name="signup/dataset/train/"+str(i)+"/"+str(q)+".jpg"
             file_train_name="./image/dataset/train/"+str(i)+"/"+str(q)+".jpg"
             if os.path.exists(file_train_name):
@@ -99,7 +100,7 @@ def s3_get_alldataset(s3,bucket):
                 s3.download_file(bucket, object_train_name, file_train_name)
                 print(str(i)+" "+str(q)+" done")
             except Exception as e:
-                print(str(i)+str(q)+e)
+                print(str(i)+" "+str(q))
                 return False    
      
     return True
@@ -129,7 +130,7 @@ def s3_get_signupuser_dataset(s3,bucket):
     objectdir2="./image/dataset/train/"+str(i)
     if not os.path.exists(objectdir2):
         os.makedirs(objectdir2)
-    for q in range(8):
+    for q in range(7):
         object_train_name="signup/dataset/train/"+str(usernumber)+"/"+str(q)+".jpg"
         file_train_name="./image/dataset/train/"+str(usernumber)+"/"+str(q)+".jpg"
         if os.path.exists(file_train_name):
@@ -138,7 +139,7 @@ def s3_get_signupuser_dataset(s3,bucket):
             s3.download_file(bucket, object_train_name, file_train_name)
             print(str(usernumber)+" "+str(q)+" done")
         except Exception as e:
-            print(str(usernumber)+str(q)+e)
+            print(str(usernumber)+" "str(q)+e)
             return False    
      
     return True
