@@ -91,7 +91,7 @@ def s3_get_alldataset(s3,bucket):
         objectdir2="./image/dataset/train/"+str(i)
         if not os.path.exists(objectdir2):
             os.makedirs(objectdir2)
-        for q in range(7):
+        for q in range(8):
             object_train_name="signup/dataset/train/"+str(i)+"/"+str(q)+".jpg"
             file_train_name="./image/dataset/train/"+str(i)+"/"+str(q)+".jpg"
             if os.path.exists(file_train_name):
@@ -130,7 +130,7 @@ def s3_get_signupuser_dataset(s3,bucket):
     objectdir2="./image/dataset/train/"+str(i)
     if not os.path.exists(objectdir2):
         os.makedirs(objectdir2)
-    for q in range(7):
+    for q in range(8):
         object_train_name="signup/dataset/train/"+str(usernumber)+"/"+str(q)+".jpg"
         file_train_name="./image/dataset/train/"+str(usernumber)+"/"+str(q)+".jpg"
         if os.path.exists(file_train_name):
