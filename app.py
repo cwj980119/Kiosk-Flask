@@ -99,6 +99,21 @@ def download():
     FL.login()
     return FL.loginDB()
 
+'''
+@app.route('/wrongface', methods=['GET','POST'])
+def download():
+    FL=flasklogin()   
+    file_path="./image/temp.jpg"
+            
+    # electron연결용
+    object_name=request.args.get('object_name')
+    #print(object_name)
+    #테스트용
+    #object_name="image/img2.jpg"
+    s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
+    
+    return FL.loginDB()
+'''
 
 @app.route('/test', methods=['GET','POST'])
 def test():
@@ -113,15 +128,32 @@ def test():
 @app.route('/alldataset_model', methods=['GET','POST'])
 def alldatasetmodel():
     s3_get_alldataset(s3,AWS_S3_BUCKET_NAME)
-    ml=Learnig()
-    ml.init_model()
+    task=celery_make_model()
+    
     return "alldatasetmodel complete"
 
 
 @app.route('/signup_dataset_model', methods=['GET','POST'])
 def signupdatasetmodel():
+    FL=flasklogin()
+
+    name = request.args.get('fullname') 
+    password = request.args.get('password')
+    birthdate = request.args.get('birthdate')
+    gender = request.args.get('gender')
+    phonenumber = request.args.get('phonumber')
+    '''
+    name='test'
+    password='1234'
+    birthdate='1997-05-02'
+    gender=1
+    phonenumber='010'
+    '''
+    
     s3_get_signupuser_dataset(s3,AWS_S3_BUCKET_NAME)
     task = celery_make_model()
+    
+    FL.signupDB(name, password, birthdate, gender, phonenumber)
     return "signup user datasetmodel complete"
 
 @app.route('/age_gender', methods=['GET','POST'])

@@ -176,6 +176,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
             print(self.user_num)
         except:
             print("DB 연결 실패")
+            
     def usernum_check(self):
         try:
             self.conn = self.connectDB()
@@ -199,3 +200,28 @@ class flasklogin():    # 구 Thread 현 flasklogin
 
         conn = pymysql.connect(host=host, user=username, password=password, db=database, port=port)
         return (conn)
+    
+    def signupDB(self,name,password,birthdate, gender,phonenumber):
+        self.conn = self.connectDB()
+        self.curs = self.conn.cursor()
+        
+        sql1 = "Select max(memberID) from sho"
+        self.curs.execute(sql1)
+        result = self.curs.fetchone()
+        #print(type(result))
+        count=result[0]+1
+        
+        sql2="ALTER TABLE sho auto_increment = "+str(count)
+        self.curs.execute(sql2)
+        
+        sql3="INSERT INTO sho ( name, password, birthdate, gender, phonenumber) VALUES ( %s, %s, %s, '%s', %s)"
+        val3=( name, password, birthdate, gender, phonenumber)
+        self.curs.execute(sql3,val3)
+        print("signupdb입력완료")
+        self.conn.commit()
+        self.curs.close()
+        self.conn.close()
+    
+    def wrongusernum_check(self):
+        print("hello")
+        
