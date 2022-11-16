@@ -31,15 +31,15 @@ AWS_SECRET_ACCESS_KEY=os.getenv('AWS_SECRET_ACCESS_KEY')
 s3 = s3_connection()
 
 @celery.task()
-def celery_make_model(request.args):
+def celery_make_model(request):
     ml=Learnig()
     FL=flasklogin()
     ml.init_model()  
-    name = request.args.get('fullname') 
-    password = request.args.get('password')
-    birthdate = request.args.get('birthdate')
-    gender = request.args.get('gender')
-    phonenumber = request.args.get('phonumber')
+    name = request.get('fullname') 
+    password = request.get('password')
+    birthdate = request.get('birthdate')
+    gender = request.get('gender')
+    phonenumber = request.get('phonumber')
     
     
 @app.route('/celery_process', methods=['GET'])
