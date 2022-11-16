@@ -113,10 +113,8 @@ def test():
     #s3_get_alldataset(s3,AWS_S3_BUCKET_NAME)
     #ml=Learnig()
     #ml.init_model()
-    FL=flasklogin()
-    FL.db_check()
-    FL.login()
-    return "test"
+    print("hello")
+    return "he"
 
 @app.route('/alldataset_model', methods=['GET','POST'])
 def alldatasetmodel():
