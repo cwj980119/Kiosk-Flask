@@ -10,10 +10,16 @@ from faceCheck import check
 import cv2
 from learning import Learnig
 import redis
+import time
+import json
+from celery import Celery
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
-app.debug=True
+
+BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+celery = Celery('app', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
 
 load_dotenv(verbose=True)
 AWS_S3_BUCKET_REGION=os.getenv('AWS_S3_BUCKET_REGION')
@@ -33,6 +39,20 @@ def stream_message(channel):
             yield 'data: ' + json.dumps(message['data'].decode()) + '\n\n'
 '''
 
+s3 = s3_connection()
+
+@celery.task()
+def celery_make_model(request.args):
+    ml=Learnig()
+    FL=flasklogin()
+    ml.init_model()  
+    name = request.args.get('fullname') 
+    password = request.args.get('password')
+    birthdate = request.args.get('birthdate')
+    gender = request.args.get('gender')
+    phonenumber = request.args.get('phonumber')
+    
+    
 @app.route('/')
 def hello():
     return "Hello, World!"
@@ -101,6 +121,8 @@ def download():
 def loginandupload():
     fullname=request.args.get('fullname')
     
+
+    
     
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -126,10 +148,15 @@ def alldatasetmodel():
 
 @app.route('/signup_dataset_model', methods=['GET','POST'])
 def signupdatasetmodel():
-    s3_get_signupuser_dataset(s3,AWS_S3_BUCKET_NAME)
-    ml=Learnig()
-    ml.init_model()
+     for i in range(11):
+        object_name=request.args.get('object_name['+str(i)+']')
+        file_path=object_name.replace('signup','./image')
+        s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
+    
+    task = celery_make_model(request.args)
     return "signup user datasetmodel complete"
+
+
 
 @app.route('/RfileDownload', methods=['GET','POST'])
 def Rdownload():
