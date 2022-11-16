@@ -6,3 +6,4 @@ facenet_keras_weights.h5
 image
 *.pyc
 __pycache__
+face_model.h5
