@@ -16,6 +16,7 @@ AWS_RDS_USERNAME=os.getenv('AWS_RDS_USERNAME')
 AWS_RDS_PORT=3306
 AWS_RDS_DATABASE=os.getenv('AWS_RDS_DATABASE')
 AWS_RDS_PASSWORD=os.getenv('AWS_RDS_PASSWORD')
+AWS_RDS_TABLE=os.getenv('AWS_RDS_TABLE')
 
 
 class flasklogin():    # 구 Thread 현 flasklogin
@@ -205,16 +206,16 @@ class flasklogin():    # 구 Thread 현 flasklogin
         self.conn = self.connectDB()
         self.curs = self.conn.cursor()
         
-        sql1 = "Select max(memberID) from sho"
+        sql1 = "Select max(memberID) from "+AWS_RDS_TABLE
         self.curs.execute(sql1)
         result = self.curs.fetchone()
         #print(type(result))
         count=result[0]+1
         
-        sql2="ALTER TABLE sho auto_increment = "+str(count)
+        sql2="ALTER TABLE "+AWS_RDS_TABLE+" auto_increment = "+str(count)
         self.curs.execute(sql2)
         
-        sql3="INSERT INTO sho ( name, password, birthdate, gender, phonenumber) VALUES ( %s, %s, %s, '%s', %s)"
+        sql3="INSERT INTO "+AWS_RDS_TABLE+" ( name, password, birthdate, gender, phonenumber, train, test) VALUES ( %s, %s, %s, '%s', %s, 8, 3)"
         val3=( name, password, birthdate, gender, phonenumber)
         self.curs.execute(sql3,val3)
         print("signupdb입력완료")

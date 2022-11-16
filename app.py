@@ -31,15 +31,11 @@ AWS_SECRET_ACCESS_KEY=os.getenv('AWS_SECRET_ACCESS_KEY')
 s3 = s3_connection()
 
 @celery.task()
-def celery_make_model(request):
+def celery_make_model(name,passoword,birthdate,gender,phonenumber):
     ml=Learnig()
     FL=flasklogin()
     ml.init_model()  
-    name = request.get('fullname') 
-    password = request.get('password')
-    birthdate = request.get('birthdate')
-    gender = request.get('gender')
-    phonenumber = request.get('phonumber')
+    FL.signupDB(name,passoword,birthdate,gender,phonenumber)
     
     
 @app.route('/celery_process', methods=['GET'])
@@ -141,12 +137,18 @@ def alldatasetmodel():
 
 @app.route('/signup_dataset_model', methods=['GET','POST'])
 def signupdatasetmodel():
-     for i in range(11):
+    for i in range(11):
         object_name=request.args.get('object_name['+str(i)+']')
         file_path=object_name.replace('signup','./image')
         s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
     
-    task = celery_make_model(request.args)
+    name = request.args.get('fullname') 
+    password = request.args.get('password')
+    birthdate = request.args.get('birthdate')
+    gender = request.args.get('gender')
+    phonenumber = request.args.get('phonumber')
+    
+    task = celery_make_model(name,password,birthdate,gender,phonenumber)
     return "signup user datasetmodel complete"
 
 
