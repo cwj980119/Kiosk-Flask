@@ -31,9 +31,16 @@ AWS_SECRET_ACCESS_KEY=os.getenv('AWS_SECRET_ACCESS_KEY')
 s3 = s3_connection()
 
 @celery.task()
-def celery_make_model():
+def celery_make_model(request.args):
     ml=Learnig()
-    ml.init_model()
+    FL=flasklogin()
+    ml.init_model()  
+    name = request.args.get('fullname') 
+    password = request.args.get('password')
+    birthdate = request.args.get('birthdate')
+    gender = request.args.get('gender')
+    phonenumber = request.args.get('phonumber')
+    
     
 @app.route('/celery_process', methods=['GET'])
 def celery_process():
@@ -99,31 +106,30 @@ def download():
     FL.login()
     return FL.loginDB()
 
-'''
-@app.route('/wrongface', methods=['GET','POST'])
-def download():
-    FL=flasklogin()   
-    file_path="./image/temp.jpg"
-            
-    # electron연결용
+
+@app.route('/addface', methods=['GET','POST'])
+def addface(): 
     object_name=request.args.get('object_name')
-    #print(object_name)
-    #테스트용
-    #object_name="image/img2.jpg"
+    file_path=object_name.replace('signup','./image')
     s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
     
-    return FL.loginDB()
-'''
+    return("hello")
+
 
 @app.route('/test', methods=['GET','POST'])
 def test():
-    #s3_get_alldataset(s3,AWS_S3_BUCKET_NAME)
-    #ml=Learnig()
-    #ml.init_model()
-    FL=flasklogin()
-    FL.db_check()
-    FL.login()
-    return "test"
+    object_name=request.args.get('object_name')
+    for i in range(object_name):
+        print(object_name[i])
+    jsonify({"result": "list possible"})
+
+@app.route('/signupdownload', methods=['GET','POST'])
+def signupdownload():
+    for i in range(11):
+        object_name=request.args.get('object_name['+str(i)+']')
+        file_path=object_name.replace('signup','./image')
+        s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
+    return True
 
 @app.route('/alldataset_model', methods=['GET','POST'])
 def alldatasetmodel():
@@ -135,26 +141,14 @@ def alldatasetmodel():
 
 @app.route('/signup_dataset_model', methods=['GET','POST'])
 def signupdatasetmodel():
-    FL=flasklogin()
-
-    name = request.args.get('fullname') 
-    password = request.args.get('password')
-    birthdate = request.args.get('birthdate')
-    gender = request.args.get('gender')
-    phonenumber = request.args.get('phonumber')
-    '''
-    name='test'
-    password='1234'
-    birthdate='1997-05-02'
-    gender=1
-    phonenumber='010'
-    '''
+     for i in range(11):
+        object_name=request.args.get('object_name['+str(i)+']')
+        file_path=object_name.replace('signup','./image')
+        s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
     
-    s3_get_signupuser_dataset(s3,AWS_S3_BUCKET_NAME)
-    task = celery_make_model()
-    
-    FL.signupDB(name, password, birthdate, gender, phonenumber)
+    task = celery_make_model(request.args)
     return "signup user datasetmodel complete"
+
 
 @app.route('/age_gender', methods=['GET','POST'])
 def age_gender():

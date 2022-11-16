@@ -1,9 +1,10 @@
 # import module
 import boto3
 import os
-#from cloudpathlib import CloudPath
 from dotenv import load_dotenv
 from newlogin import flasklogin
+import dlib,cv2
+import numpy as np
 
 
 load_dotenv(verbose=True)
@@ -58,6 +59,20 @@ def s3_get_object(s3, bucket, object_name, file_name):
     '''
     try:
         s3.download_file(bucket, object_name, file_name)
+        detector = dlib.get_frontal_face_detector()
+        frame = cv2.imread(file_name,1)
+        face = detector(frame)
+        for f in face:
+            # dlib으로 얼굴 검출
+            cv2.rectangle(frame, (f.left(), f.top()), (f.right(), f.bottom()), (0, 0, 255), 1)
+        
+        if len(face) == 1:
+            crop = frame[f.top():f.bottom(), f.left():f.right()]
+            crop = cv2.resize(crop, (224, 224))
+            image = np.array(crop)
+            image = image.astype('float32') / 255
+            #print(image.shape)
+            cv2.imwrite(file_name,crop)
         print("done")
     except Exception as e:
         print(e)
@@ -86,6 +101,25 @@ def s3_get_alldataset(s3,bucket):
                 os.remove(file_test_name)
             try:
                 s3.download_file(bucket, object_test_name, file_test_name)
+                
+                detector = dlib.get_frontal_face_detector()
+                frame = cv2.imread(file_test_name,1)
+                face = detector(frame)
+                for f in face:
+                # dlib으로 얼굴 검출
+                    cv2.rectangle(frame, (f.left(), f.top()), (f.right(), f.bottom()), (0, 0, 255), 1)
+        
+                if len(face) == 1:
+                    crop = frame[f.top():f.bottom(), f.left():f.right()]
+                    crop = cv2.resize(crop, (224, 224))
+                    image = np.array(crop)
+                    image = image.astype('float32') / 255
+                    #print(image.shape)
+                    cv2.imwrite(file_test_name,crop)
+            
+                else:
+                    print("얼굴이 없습니다")
+        
                 print(str(i)+" "+str(j)+" done")
             except Exception as e:
                 print("test "+str(i)+" "+str(j)+" is wrong")
@@ -102,6 +136,24 @@ def s3_get_alldataset(s3,bucket):
                 os.remove(file_train_name)
             try:
                 s3.download_file(bucket, object_train_name, file_train_name)
+                
+                detector = dlib.get_frontal_face_detector()
+                frame = cv2.imread(file_train_name,1)
+                face = detector(frame)
+                for f in face:
+                # dlib으로 얼굴 검출
+                    cv2.rectangle(frame, (f.left(), f.top()), (f.right(), f.bottom()), (0, 0, 255), 1)
+        
+                if len(face) == 1:
+                    crop = frame[f.top():f.bottom(), f.left():f.right()]
+                    crop = cv2.resize(crop, (224, 224))
+                    image = np.array(crop)
+                    image = image.astype('float32') / 255
+                    #print(image.shape)
+                    cv2.imwrite(file_train_name,crop)
+            
+                else:
+                    print("얼굴이 없습니다")
                 print(str(i)+" "+str(q)+" done")
             except Exception as e:
                 print("train "+str(i)+" "+str(q)+" is wrong")
@@ -128,6 +180,24 @@ def s3_get_signupuser_dataset(s3,bucket):
             os.remove(file_test_name)
         try:
             s3.download_file(bucket, object_test_name, file_test_name)
+            
+            detector = dlib.get_frontal_face_detector()
+            frame = cv2.imread(file_test_name,1)
+            face = detector(frame)
+            for f in face:
+                # dlib으로 얼굴 검출
+                cv2.rectangle(frame, (f.left(), f.top()), (f.right(), f.bottom()), (0, 0, 255), 1)
+        
+            if len(face) == 1:
+                crop = frame[f.top():f.bottom(), f.left():f.right()]
+                crop = cv2.resize(crop, (224, 224))
+                image = np.array(crop)
+                image = image.astype('float32') / 255
+                cv2.imwrite(file_test_name,crop)
+            
+            else:
+                print("얼굴이 없습니다")
+                    
             print(str(usernumber)+" "+str(j)+" done")
         except Exception as e:
             print(str(usernumber)+" "+str(j))
@@ -143,6 +213,25 @@ def s3_get_signupuser_dataset(s3,bucket):
             os.remove(file_train_name)
         try:
             s3.download_file(bucket, object_train_name, file_train_name)
+            
+            detector = dlib.get_frontal_face_detector()
+            frame = cv2.imread(file_train_name,1)
+            face = detector(frame)
+            for f in face:
+            # dlib으로 얼굴 검출
+                cv2.rectangle(frame, (f.left(), f.top()), (f.right(), f.bottom()), (0, 0, 255), 1)
+        
+            if len(face) == 1:
+                crop = frame[f.top():f.bottom(), f.left():f.right()]
+                crop = cv2.resize(crop, (224, 224))
+                image = np.array(crop)
+                image = image.astype('float32') / 255
+                cv2.imwrite(file_train_name,crop)
+            
+            else:
+                print("얼굴이 없습니다")
+            
+            
             print(str(usernumber)+" "+str(q)+" done")
         except Exception as e:
             print(str(usernumber)+" "+str(q))

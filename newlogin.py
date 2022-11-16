@@ -7,7 +7,7 @@ import os
 from flask import Flask, jsonify, request
 import json
 
-#oad_model = load_model('tl_20_cropped_e20_b200.h5')
+#load_model = load_model('tl_20_cropped_e20_b200.h5')
 load_model = load_model("face_model.h5")
 
 load_dotenv(verbose=True)
@@ -77,7 +77,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         frame = cv2.imread('./image/temp.jpg',1)
         face = detector(frame)
         for f in face:
-                # dlib으로 얼굴 검출
+            # dlib으로 얼굴 검출
             cv2.rectangle(frame, (f.left(), f.top()), (f.right(), f.bottom()), (0, 0, 255), 1)
         
         if len(face) == 1:
@@ -106,7 +106,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         age_list = ['(0 ~ 2)','(4 ~ 6)','(8 ~ 12)','(15 ~ 20)','(21 ~ 24)','(25 ~ 29)','(30 ~ 43)','(48 ~ 53)','(60 ~ 100)']
         gender_list = ['Male', 'Female']
         
-        frame = cv2.imread('./image/temp.jpg',1)
+        frame = cv2.imread('./image/temp0.jpg',1)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
         # cascade 얼굴 탐지 알고리즘 
         results = cascade.detectMultiScale(gray)        
@@ -223,5 +223,6 @@ class flasklogin():    # 구 Thread 현 flasklogin
         self.conn.close()
     
     def wrongusernum_check(self):
+        
         print("hello")
         

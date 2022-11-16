@@ -19,7 +19,9 @@ class Make_model():
         #이름 변경
         if os.path.exists('face_model.h5'):
                 os.remove('face_model.h5')
+                
         self.my_model.save('face_model.h5')
+        
         print("model saved")
 
 
