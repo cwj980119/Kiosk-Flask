@@ -136,20 +136,20 @@ class flasklogin():    # 구 Thread 현 flasklogin
         
         self.predict_list=[]
         #print(self.l)
-        sql = "select * from sho where memberID =" + str(self.l[0]+1)
+        sql = "select * from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[0]+1)
         self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchone())
-        sql = "select * from sho where memberID =" + str(self.l[1]+1)
+        sql = "select * from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[1]+1)
         self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchone())
-        sql = "select * from sho where memberID =" + str(self.l[2]+1)
+        sql = "select * from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[2]+1)
         self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchone())
-        sql = "select * from sho where memberID =" + str(self.l[3]+1)
+        sql = "select * from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[3]+1)
         self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchone())
         '''
-        sql = "select * from sho where memberID in ("+str(self.l[1]+1)+"," + str(self.l[2]+1)+"," + str(self.l[3]+1)+")"
+        sql = "select * from "+AWS_RDS_TABLE+" where memberID in ("+str(self.l[1]+1)+"," + str(self.l[2]+1)+"," + str(self.l[3]+1)+")"
         self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchall())
         '''
@@ -170,7 +170,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         try:
             self.conn = self.connectDB()
             self.curs = self.conn.cursor()
-            sql1 = "Select max(memberID) from sho"
+            sql1 = "Select max(memberID) from "+AWS_RDS_TABLE
             self.curs.execute(sql1)
             result = self.curs.fetchone()
             self.user_num = result[0]
@@ -182,7 +182,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         try:
             self.conn = self.connectDB()
             self.curs = self.conn.cursor()
-            sql1 = "Select max(memberID) from sho"
+            sql1 = "Select max(memberID) from "+AWS_RDS_TABLE
             self.curs.execute(sql1)
             result = self.curs.fetchone()
             self.user_num = result[0]
