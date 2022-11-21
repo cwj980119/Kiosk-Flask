@@ -17,6 +17,9 @@ AWS_RDS_PORT=3306
 AWS_RDS_DATABASE=os.getenv('AWS_RDS_DATABASE')
 AWS_RDS_PASSWORD=os.getenv('AWS_RDS_PASSWORD')
 AWS_RDS_TABLE=os.getenv('AWS_RDS_TABLE')
+AWS_RDS_MENUTABLE=os.getenv('AWS_RDS_MENUTABLE')
+AWS_RDS_SIGNUPMENU=os.getenv('AWS_RDS_SIGNUPMENU')
+AWS_RDS_NONSIGNUPMENU=os.getenv('AWS_RDS_NONSIGNUPMENU')
 
 
 class flasklogin():    # 구 Thread 현 flasklogin
@@ -189,6 +192,18 @@ class flasklogin():    # 구 Thread 현 flasklogin
             return(self.user_num+1)
         except:
             print("DB 연결 실패")
+    
+    def loginmenu_check(self,object_name):
+        try:
+            self.conn = self.connectDB()
+            self.curs = self.conn.cursor()
+            sql1 = "Select memberID from "+AWS_RDS_TABLE+" Where name == "+object_name
+            self.curs.execute(sql1)
+            result = self.curs.fetchone()
+            self.memberID = result[0]
+            return(self.user_num)
+        except:
+            print("DB 연결 실패")
             
             
     def connectDB(self):
@@ -222,7 +237,96 @@ class flasklogin():    # 구 Thread 현 flasklogin
         self.conn.commit()
         self.curs.close()
         self.conn.close()
+        
+    def signupmenuDB(self):
+        # 회원가입시 모든 메뉴 디폴트 0값으로 만들기
+        self.conn = self.connectDB()
+        self.curs = self.conn.cursor()
+        
+        sql1 = "Select max(memberID) from "+AWS_RDS_TABLE
+        self.curs.execute(sql1)
+        result = self.curs.fetchone()
+        #print(type(result))
+        count1=result[0]
+        
+        sql2 = "Select menuID from "+AWS_RDS_MENUTABLE
+        self.curs.execute(sql1)
+        menuID = self.curs.fetchone()
+        
+        for i in range(menuID):
+            sql3="INSERT INTO "+AWS_RDS_SIGNUPMENU+" ( memberID, menuID[i]) VALUES ( %s, %s)"
+            val3=(count1,menuID[i])
+            self.curs.execute(sql3,val3)
+            self.conn.commit()
+            
+        print("signupmenudb입력완료")
+        self.curs.close()
+        self.conn.close()
     
+    def signupmenuprint(self,memberID):
+        #memberID로 category별메뉴선호도 찾아 출력
+        self.conn = self.connectDB()
+        self.curs = self.conn.cursor()
+        
+        sql1 = "SELECT "+\
+            AWS_RDS_SIGNUPMENU+".menuID AS menu, "+\
+            AWS_RDS_SIGNUPMENU+".menucount AS count, "+\
+            AWS_RDS_MENUTABLE+".category AS category \
+            FROM "+AWS_RDS_MENUTABLE+" \
+            INNER JOIN "+AWS_RDS_SIGNUPMENU+" ON "+AWS_RDS_MENUTABLE+".menuID = "+AWS_RDS_SIGNUPMENU+".menuID \
+            WHERE category= 'main' AND "+AWS_RDS_SIGNUPMENU+".memberID = " +str(memberID)+" \
+            ORDER BY "+AWS_RDS_SIGNUPMENU+".menucount DESC"
+           
+        self.curs.execute(sql1)
+        self.conn.commit()
+        mainresult = self.curs.fetchall()
+        
+        sql2 = "SELECT "+\
+            AWS_RDS_SIGNUPMENU+".menuID AS menu, "+\
+            AWS_RDS_SIGNUPMENU+".menucount AS count, "+\
+            AWS_RDS_MENUTABLE+".category AS category \
+            FROM "+AWS_RDS_MENUTABLE+" \
+            INNER JOIN "+AWS_RDS_SIGNUPMENU+" ON "+AWS_RDS_MENUTABLE+".menuID = "+AWS_RDS_SIGNUPMENU+".menuID \
+            WHERE category= 'side' AND "+AWS_RDS_SIGNUPMENU+".memberID = " +str(memberID)+" \
+            ORDER BY "+AWS_RDS_SIGNUPMENU+".menucount DESC"
+           
+        self.curs.execute(sql2)
+        self.conn.commit()
+        sideresult = self.curs.fetchall()
+        
+        sql3 = "SELECT "+\
+            AWS_RDS_SIGNUPMENU+".menuID AS menu, "+\
+            AWS_RDS_SIGNUPMENU+".menucount AS count, "+\
+            AWS_RDS_MENUTABLE+".category AS category \
+            FROM "+AWS_RDS_MENUTABLE+" \
+            INNER JOIN "+AWS_RDS_SIGNUPMENU+" ON "+AWS_RDS_MENUTABLE+".menuID = "+AWS_RDS_SIGNUPMENU+".menuID \
+            WHERE category= 'drink' AND "+AWS_RDS_SIGNUPMENU+".memberID = " +str(memberID)+" \
+            ORDER BY "+AWS_RDS_SIGNUPMENU+".menucount DESC"
+           
+        self.curs.execute(sql3)
+        self.conn.commit()
+        drinkresult = self.curs.fetchall()
+        
+        self.curs.close()
+        self.conn.close()
+        
+        print("hel")
+        
+    def loginmenudata_update(self,memberID, menuID, menucount):
+        
+        self.conn = self.connectDB()
+        self.curs = self.conn.cursor()
+        sql="UPDATE "+AWS_RDS_SIGNUPMENU+" SET menucount = "+AWS_RDS_SIGNUPMENU+".menucount \
+            + "+str(menucount)+" where memberID = (%s) AND menuID = (%s)"
+        val=(memberID,menuID)
+        self.curs.execute(sql,val)
+        self.conn.commit()
+        print("update")
+        
+        self.curs.close()
+        self.conn.close()
+        
+        
     def wrongusernum_check(self):
         
         print("hello")

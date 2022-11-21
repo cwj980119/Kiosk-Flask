@@ -36,12 +36,15 @@ def celery_make_model(name,passoword,birthdate,gender,phonenumber):
     FL=flasklogin()
     ml.init_model()  
     FL.signupDB(name,passoword,birthdate,gender,phonenumber)
-    
-    
-@app.route('/celery_process', methods=['GET'])
-def celery_process():
-    task = celery_make_model()
+    FL.signupmenuDB()
     return ("celery_model complete")
+
+@celery.task()
+def addface_make_model():
+    ml=Learnig()
+    ml.init_model()  
+    return ("celery_model complete")
+    
 
 @app.route('/')
 def hello():
@@ -91,33 +94,63 @@ def download():
             
     # electron연결용
     object_name=request.args.get('object_name')
-    #print(object_name)
-    #테스트용
-    #object_name="image/img2.jpg"
-    # 파일 다운로드하면서 바로 가능한가?
     s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
-    #print("1")
     FL.db_check()
-    #print("2")
     FL.login()
     return FL.loginDB()
 
+@app.route('/loginmenu', methods=['GET','POST'])
+def loginmenu(): 
+    FL=flasklogin() 
+    #memberID받아서 menu출력
+    memberID=request.args.get('memberID')
+    
+    return FL.signuomenuprint(memberID)
+
+@app.route('/loginmenudata_update', methods=['GET','POST'])
+def loginmenudata_update(): 
+    #로그인한 사람이 주문한 데이터를 다시 저장
+    FL=flasklogin() 
+    count=request.args.get('count')
+    memberID=request.args.get('memberID')
+    for i in range(count):
+        menuID=request.args.get('menuID['+str(i)+']')
+        menucount=request.args.get('menucount['+str(i)+']')
+        FL.loginmenudata_update(memberID, menuID, menucount)
+
+    
+    return FL.menuprint(memberID)
+'''
+@app.route('/signupmenu', methods=['GET','POST'])
+def signupmenu(): 
+    FL=flasklogin() 
+    object_name=request.args.get('object_name')
+    memberID=FL.loginmenu_check(object_name)
+    
+    return FL.menuprint(memberID)
+'''
 
 @app.route('/addface', methods=['GET','POST'])
 def addface(): 
     object_name=request.args.get('object_name')
     file_path=object_name.replace('signup','./image')
     s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
-    
+    task=addface_make_model()
     return("hello")
 
 
 @app.route('/test', methods=['GET','POST'])
 def test():
+    '''
     object_name=request.args.get('object_name')
     for i in range(object_name):
         print(object_name[i])
     jsonify({"result": "list possible"})
+    '''
+    FL=flasklogin()
+    menuID='m1'
+    FL.loginmenudata_update(1, menuID, 1)
+    return("done")
 
 @app.route('/signupdownload', methods=['GET','POST'])
 def signupdownload():
@@ -149,10 +182,16 @@ def signupdatasetmodel():
     phonenumber = request.args.get('phonumber')
     
     task = celery_make_model(name,password,birthdate,gender,phonenumber)
+    
     return "signup user datasetmodel complete"
 
 
 @app.route('/age_gender', methods=['GET','POST'])
+def age_gender():
+    FL=flasklogin()
+    return FL.age_gendercheck()
+
+@app.route('/nonloginmenu', methods=['GET','POST'])
 def age_gender():
     FL=flasklogin()
     return FL.age_gendercheck()
