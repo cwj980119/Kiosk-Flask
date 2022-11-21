@@ -248,13 +248,17 @@ class flasklogin():    # 구 Thread 현 flasklogin
         result = self.curs.fetchone()
         #print(type(result))
         count1=result[0]
+        print(count1)
         
         sql2 = "Select menuID from "+AWS_RDS_MENUTABLE
-        self.curs.execute(sql1)
-        menuID = self.curs.fetchone()
+        self.curs.execute(sql2)
+        menuID = self.curs.fetchall()
+        print(menuID)
+        menuID=[list(menuID[x]) for x in range(len(menuID))]
+        print(menuID)
         
-        for i in range(menuID):
-            sql3="INSERT INTO "+AWS_RDS_SIGNUPMENU+" ( memberID, menuID[i]) VALUES ( %s, %s)"
+        for i in range(len(menuID)):
+            sql3="INSERT INTO "+AWS_RDS_SIGNUPMENU+" ( memberID, menuID) VALUES ( %s, %s)"
             val3=(count1,menuID[i])
             self.curs.execute(sql3,val3)
             self.conn.commit()

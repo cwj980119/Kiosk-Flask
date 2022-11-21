@@ -148,8 +148,8 @@ def test():
     jsonify({"result": "list possible"})
     '''
     FL=flasklogin()
-    menuID='m1'
-    FL.loginmenudata_update(1, menuID, 1)
+    
+    FL.signupmenuDB()
     return("done")
 
 @app.route('/signupdownload', methods=['GET','POST'])
@@ -192,7 +192,7 @@ def age_gender():
     return FL.age_gendercheck()
 
 @app.route('/nonloginmenu', methods=['GET','POST'])
-def age_gender():
+def nonloginmenu():
     FL=flasklogin()
     return FL.age_gendercheck()
     
