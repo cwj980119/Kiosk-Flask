@@ -143,7 +143,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchone())
         sql = "select memberID, name, date_format(birthdate, '%m%d') as date, date_format(birthdate, '%Y') as year, gender from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[1]+1)
-        self.curs.execut(sql)
+        self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchone())
         sql = "select memberID, name, date_format(birthdate, '%m%d') as date, date_format(birthdate, '%Y') as year, gender from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[2]+1)
         self.curs.execute(sql)
