@@ -161,11 +161,11 @@ class flasklogin():    # 구 Thread 현 flasklogin
         return jsonify({"0" : {"id":self.predict_list[0][0],"name": self.predict_list[0][1],
                  "Date":self.predict_list[0][2],"year":self.predict_list[0][3],"gender":self.predict_list[0][4]},
                   "1" : {"id":self.predict_list[1][0],"name": self.predict_list[1][1],
-                      "Date":self.predict_list[1][2],"year":self.predict_list[1][3]"gender":self.predict_list[1][4]},
+                 "Date":self.predict_list[1][2],"year":self.predict_list[1][3],"gender":self.predict_list[1][4]},
                   "2" : {"id":self.predict_list[2][0],"name": self.predict_list[2][1],
-                 "Date":self.predict_list[2][2],"year":self.predict_list[2][3]"gender":self.predict_list[2][4]},
+                 "Date":self.predict_list[2][2],"year":self.predict_list[2][3],"gender":self.predict_list[2][4]},
                   "3" : {"id":self.predict_list[3][0],"name": self.predict_list[3][1],
-                 "Date":self.predict_list[3][2],"year":self.predict_list[3][3]"gender":self.predict_list[3][4]}})
+                 "Date":self.predict_list[3][2],"year":self.predict_list[3][3],"gender":self.predict_list[3][4]}})
           
     
         
