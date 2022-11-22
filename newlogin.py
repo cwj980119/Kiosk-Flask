@@ -20,7 +20,7 @@ AWS_RDS_TABLE=os.getenv('AWS_RDS_TABLE')
 AWS_RDS_MENUTABLE=os.getenv('AWS_RDS_MENUTABLE')
 AWS_RDS_SIGNUPMENU=os.getenv('AWS_RDS_SIGNUPMENU')
 AWS_RDS_NONSIGNUPMENU=os.getenv('AWS_RDS_NONSIGNUPMENU')
-
+AWS_RDS_MENUDATA=os.getenv('AWS_RDS_MENUDATA')
 
 class flasklogin():    # 구 Thread 현 flasklogin
     def __init__(self):
@@ -107,10 +107,10 @@ class flasklogin():    # 구 Thread 현 flasklogin
 
         age_net = cv2.dnn.readNetFromCaffe('deploy_age.prototxt','age_net.caffemodel')
         gender_net = cv2.dnn.readNetFromCaffe('deploy_gender.prototxt','gender_net.caffemodel')
-        age_list = ['(0 ~ 2)','(4 ~ 6)','(8 ~ 12)','(15 ~ 20)','(21 ~ 24)','(25 ~ 29)','(30 ~ 43)','(48 ~ 53)','(60 ~ 100)']
+        age_list = ['(0 ~ 2)','(4 ~ 6)','(8 ~ 12)','(15 ~ 20)', '(25 ~ 32)','(38 ~ 43)','(48 ~ 53)','(60 ~ 100)']
         gender_list = ['Male', 'Female']
         
-        frame = cv2.imread('./image/temp0.jpg',1)
+        frame = cv2.imread('./image/temp.jpg',1)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
         # cascade 얼굴 탐지 알고리즘 
         results = cascade.detectMultiScale(gray)        
@@ -314,7 +314,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         self.curs.close()
         self.conn.close()
         
-        print("hel")
+        return
         
     def loginmenudata_update(self,memberID, menuID, menucount):
         
@@ -330,8 +330,17 @@ class flasklogin():    # 구 Thread 현 flasklogin
         self.curs.close()
         self.conn.close()
         
+    def nonloginmenu(self,age,gender):
+        #회원데이터와 비회원데이터를 먼저 합치고 합쳐진 데이터로 추천
+        self.conn = self.connectDB()
+        self.curs = self.conn.cursor()
+        #회원데이터를 agegroup으로 바꾸어 출력
+        sql1 = "UPDATE "+AWS_RDS_MENUDATA+" SET menucount = "+AWS_RDS_MENUDATA+".menucount \
+            + "+AWS_RDS_SIGNUPMENU+".menucount AND  where memberID = (%s) AND menuID = (%s)"
+           
+        self.curs.close()
+        self.conn.close()
         
-    def wrongusernum_check(self):
         
-        print("hello")
         
+   

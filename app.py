@@ -193,8 +193,10 @@ def age_gender():
 
 @app.route('/nonloginmenu', methods=['GET','POST'])
 def nonloginmenu():
+    age=request.args.get('age')
+    gender=request.args.get('gender')
     FL=flasklogin()
-    return FL.age_gendercheck()
+    return FL.nonloginmenu(age,gender)
     
 
 @app.route('/RfileDownload', methods=['GET','POST'])
