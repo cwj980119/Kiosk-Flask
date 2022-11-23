@@ -128,15 +128,14 @@ def loginmenu():
 @app.route('/loginmenudata_update', methods=['GET','POST'])
 def loginmenudata_update(): 
     #로그인한 사람이 주문한 데이터를 다시 저장
-    FL=flasklogin() 
-    count=request.args.get('count')
+    FL=flasklogin()
     memberID=request.args.get('memberID')
     for i in range(count):
         menuID=request.args.get('menuID['+str(i)+']')
         menucount=request.args.get('menucount['+str(i)+']')
         FL.loginmenudata_update(memberID, menuID, menucount)
         
-    mainresult, sideresult, drinkresult=FL.menuprint(memberID)
+    mainresult, sideresult, drinkresult=FL.signupmenuprint(memberID)
     
     return jsonify(mainresult), jsonify(sideresult), jsonify(drinkresult)
 '''
@@ -153,6 +152,9 @@ def signupmenu():
 def addface(): 
     object_name=request.args.get('object_name')
     file_path=object_name.replace('signup','./image')
+    jpg=file_path.rfind('.jpg')
+    file_path=file_path[:jpg+4]
+
     s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
     return("hello")
 
@@ -167,7 +169,9 @@ def test():
     '''
     FL=flasklogin()
     
-    FL.nonloginmenu("0~12",1)
+    mainresult, sideresult, drinkresult=FL.signupmenuprint(1)
+    
+    return jsonify(mainresult,sideresult,drinkresult)
     return("done")
 
 @app.route('/signupdownload', methods=['GET','POST'])
@@ -175,6 +179,8 @@ def signupdownload():
     for i in range(11):
         object_name=request.args.get('object_name['+str(i)+']')
         file_path=object_name.replace('signup','./image')
+        jpg=file_path.rfind('.jpg')
+        file_path=file_path[:jpg+4]
         s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
     return True
 
@@ -191,6 +197,8 @@ def signupdatasetmodel():
     for i in range(11):
         object_name=request.args.get('object_name['+str(i)+']')
         file_path=object_name.replace('signup','./image')
+        jpg=file_path.rfind('.jpg')
+        file_path=file_path[:jpg+4]
         s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
     
     name = request.args.get('fullname') 

@@ -132,7 +132,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
             age_preds = age_net.forward()
             age = age_preds.argmax()
             info = gender_list[gender] +' '+ age_list[age]
-            return gender_list[gender],age_list[age]
+            return gender_list[gender], age_list[age]
             
 
         
@@ -348,23 +348,28 @@ class flasklogin():    # 구 Thread 현 flasklogin
         +" YEAR(NOW())-LEFT("+AWS_RDS_SIGNUP+".birthday,4) <13 AND " \
         +AWS_RDS_NONSIGNUPMENU+".agegroup = '0~12'"
         '''
+        
         sql1 = "UPDATE "+AWS_RDS_NONSIGNUPMENU+", "+AWS_RDS_MENUDATA+", "+AWS_RDS_SIGNUPMENU+ \
         " SET "+AWS_RDS_NONSIGNUPMENU+".count = "+AWS_RDS_NONSIGNUPMENU+".count \
             + "+AWS_RDS_SIGNUPMENU+".menucount \
-        where "+AWS_RDS_NONSIGNUPMENU+".menuID = "+AWS_RDS_SIGNUPMENU+".menuID AND " \
-        +AWS_RDS_NONSIGNUPMENU+".gender = "+AWS_RDS_SIGNUP+".gender AND " \
-        +" YEAR(NOW())-LEFT("+AWS_RDS_SIGNUP+".birthday,4) <13 AND " \
-        +AWS_RDS_NONSIGNUPMENU+".agegroup = '0~12'"
-        
-        
+        where "+AWS_RDS_NONSIGNUPMENU+".menuID = "+AWS_RDS_SIGNUPMENU+".menuID AND '" \
+        +AWS_RDS_NONSIGNUPMENU+".gender' = '"+AWS_RDS_SIGNUP+".gender' AND " \
+        +" YEAR(NOW())-LEFT('"+AWS_RDS_SIGNUP+".birthdate',4) <25 AND \
+        YEAR(NOW())-LEFT('"+AWS_RDS_SIGNUP+".birthdate',4) >19 AND " \
+        +AWS_RDS_NONSIGNUPMENU+".agegroup = '15~20'"
         self.curs.execute(sql1)
         self.conn.commit()
+        
         print("update")
-        sql2="Select memberID from "+AWS_RDS_NONSIGNUPMENU+" Where agegroup=(%s) AND gender = (%s)"
+        sql2="Select count from "+AWS_RDS_NONSIGNUPMENU+" Where agegroup=(%s) AND gender = (%s)"
         val2=(age,gender)
         self.curs.execute(sql2,val2)
+        result= self.curs.fetchall()
+        print(result)
+        result=[list(result[x]) for x in range(len(result))]
+        print(result)
         self.conn.commit()
-        print("done")
+        
            
         self.curs.close()
         self.conn.close()
