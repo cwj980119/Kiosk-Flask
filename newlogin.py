@@ -235,9 +235,8 @@ class flasklogin():    # 구 Thread 현 flasklogin
         sql2="ALTER TABLE "+AWS_RDS_TABLE+" auto_increment = "+str(count)
         self.curs.execute(sql2)
         
-        sql3="INSERT INTO "+AWS_RDS_TABLE+" ( name, password, birthdate, gender, phonenumber, train, test) VALUES ( %s, %s, %s, '%s', %s, 8, 3)"
-        val3=( name, password, birthdate, gender, phonenumber)
-        self.curs.execute(sql3,val3)
+        sql3="INSERT INTO "+AWS_RDS_TABLE+" ( name, password, birthdate, gender, phonenumber, train, test) VALUES ( "+name+", "+password+", "+birthdate+", "+gender+", "+phonenumber+", 8, 3)"
+        self.curs.execute(sql3)
         print("signupdb입력완료")
         self.conn.commit()
         self.curs.close()
