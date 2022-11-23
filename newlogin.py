@@ -140,16 +140,16 @@ class flasklogin():    # 구 Thread 현 flasklogin
         
         self.predict_list=[]
         #print(self.l)
-        sql = "select memberID, name, date_format(birthdate, '%m%d') as date, date_format(birthdate, '%Y') as year, gender from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[0]+1)
+        sql = "select memberID, name, date_format(birthdate, '%m%d') as date, date_format(birthdate, '%Y') as year, gender, train, test from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[0]+1)
         self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchone())
-        sql = "select memberID, name, date_format(birthdate, '%m%d') as date, date_format(birthdate, '%Y') as year, gender from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[1]+1)
+        sql = "select memberID, name, date_format(birthdate, '%m%d') as date, date_format(birthdate, '%Y') as year, gender, train, test from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[1]+1)
         self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchone())
-        sql = "select memberID, name, date_format(birthdate, '%m%d') as date, date_format(birthdate, '%Y') as year, gender from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[2]+1)
+        sql = "select memberID, name, date_format(birthdate, '%m%d') as date, date_format(birthdate, '%Y') as year, gender, train, test from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[2]+1)
         self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchone())
-        sql = "select memberID, name, date_format(birthdate, '%m%d') as date, date_format(birthdate, '%Y') as year, gender from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[3]+1)
+        sql = "select memberID, name, date_format(birthdate, '%m%d') as date, date_format(birthdate, '%Y') as year, gender, train, test from "+AWS_RDS_TABLE+" where memberID =" + str(self.l[3]+1)
         self.curs.execute(sql)
         self.predict_list.append(self.curs.fetchone())
         '''
@@ -160,13 +160,17 @@ class flasklogin():    # 구 Thread 현 flasklogin
         print(self.predict_list)
 
         return jsonify({"0" : {"id":self.predict_list[0][0],"name": self.predict_list[0][1],
-                 "Date":self.predict_list[0][2],"year":self.predict_list[0][3],"gender":self.predict_list[0][4]},
+                 "Date":self.predict_list[0][2],"year":self.predict_list[0][3],"gender":self.predict_list[0][4],
+                               "train":self.predict_list[0][5], "test":self.predict_list[0][6]},
                   "1" : {"id":self.predict_list[1][0],"name": self.predict_list[1][1],
-                 "Date":self.predict_list[1][2],"year":self.predict_list[1][3],"gender":self.predict_list[1][4]},
+                 "Date":self.predict_list[1][2],"year":self.predict_list[1][3],"gender":self.predict_list[1][4],
+                               "train":self.predict_list[1][5], "test":self.predict_list[1][6]},
                   "2" : {"id":self.predict_list[2][0],"name": self.predict_list[2][1],
-                 "Date":self.predict_list[2][2],"year":self.predict_list[2][3],"gender":self.predict_list[2][4]},
+                 "Date":self.predict_list[2][2],"year":self.predict_list[2][3],"gender":self.predict_list[2][4],
+                               "train":self.predict_list[2][5], "test":self.predict_list[2][6]},
                   "3" : {"id":self.predict_list[3][0],"name": self.predict_list[3][1],
-                 "Date":self.predict_list[3][2],"year":self.predict_list[3][3],"gender":self.predict_list[3][4]}})
+                 "Date":self.predict_list[3][2],"year":self.predict_list[3][3],"gender":self.predict_list[3][4],
+                               "train":self.predict_list[3][5], "test":self.predict_list[3][6]}})
           
     
         
