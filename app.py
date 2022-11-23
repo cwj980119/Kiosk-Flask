@@ -154,7 +154,6 @@ def addface():
     object_name=request.args.get('object_name')
     file_path=object_name.replace('signup','./image')
     s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
-    task=addface_make_model()
     return("hello")
 
 

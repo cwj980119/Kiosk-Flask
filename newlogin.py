@@ -108,7 +108,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
 
         age_net = cv2.dnn.readNetFromCaffe('deploy_age.prototxt','age_net.caffemodel')
         gender_net = cv2.dnn.readNetFromCaffe('deploy_gender.prototxt','gender_net.caffemodel')
-        age_list = ['(0 ~ 2)','(4 ~ 6)','(8 ~ 12)','(15 ~ 20)', '(25 ~ 32)','(38 ~ 43)','(48 ~ 53)','(60 ~ 100)']
+        age_list = [0, 0, 0, 0, 20, 30, 40, 50]
         gender_list = ['Male', 'Female']
         
         frame = cv2.imread('./image/check.jpg',1)
