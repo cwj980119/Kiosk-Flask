@@ -1,12 +1,12 @@
 from sre_parse import FLAGS
 from flask import Flask, jsonify, request
-from s3 import s3_connection, s3_put_object, s3_get_object,s3_get_alldataset,s3_get_signupuser_dataset
+from s3 import s3_connection, s3_put_object, s3_get_object,s3_get_alldataset,s3_get_signupuser_dataset,nonsignup_s3_get_object
 import os
 import boto3
 from dotenv import load_dotenv
 from newlogin import flasklogin
 from newregister import flaskRegister
-from faceCheck import check
+from faceCheck import check,origincheck
 import cv2
 from learning import Learnig
 import redis
@@ -72,6 +72,17 @@ def faceCheck():
     result = check();
     return jsonify({"result": result})
 
+@app.route('/faceOriginCheck', methods=['GET','POST'])
+def faceOriginCheck():
+    file_path = "./image/check.jpg"
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    object_name = "image/check.jpg"
+    nonsignup_s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
+    result = origincheck();
+    return jsonify({"result": result})
+
 
 @app.route('/fileUpload', methods=['POST'])
 def upload():
@@ -117,9 +128,10 @@ def loginmenudata_update():
         menuID=request.args.get('menuID['+str(i)+']')
         menucount=request.args.get('menucount['+str(i)+']')
         FL.loginmenudata_update(memberID, menuID, menucount)
-
+        
+    mainresult, sideresult, drinkresult=FL.menuprint(memberID)
     
-    return FL.menuprint(memberID)
+    return jsonify(mainresult), jsonify(sideresult), jsonify(drinkresult)
 '''
 @app.route('/signupmenu', methods=['GET','POST'])
 def signupmenu(): 
@@ -149,7 +161,7 @@ def test():
     '''
     FL=flasklogin()
     
-    FL.signupmenuDB()
+    FL.nonloginmenu("0~12",1)
     return("done")
 
 @app.route('/signupdownload', methods=['GET','POST'])

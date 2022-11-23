@@ -21,6 +21,7 @@ AWS_RDS_MENUTABLE=os.getenv('AWS_RDS_MENUTABLE')
 AWS_RDS_SIGNUPMENU=os.getenv('AWS_RDS_SIGNUPMENU')
 AWS_RDS_NONSIGNUPMENU=os.getenv('AWS_RDS_NONSIGNUPMENU')
 AWS_RDS_MENUDATA=os.getenv('AWS_RDS_MENUDATA')
+AWS_RDS_SIGNUP=os.getenv('AWS_RDS_SIGNUP')
 
 class flasklogin():    # 구 Thread 현 flasklogin
     def __init__(self):
@@ -314,7 +315,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         self.curs.close()
         self.conn.close()
         
-        return
+        return mainresult, sideresult, drinkresult
         
     def loginmenudata_update(self,memberID, menuID, menucount):
         
@@ -334,9 +335,30 @@ class flasklogin():    # 구 Thread 현 flasklogin
         #회원데이터와 비회원데이터를 먼저 합치고 합쳐진 데이터로 추천
         self.conn = self.connectDB()
         self.curs = self.conn.cursor()
-        #회원데이터를 agegroup으로 바꾸어 출력
-        sql1 = "UPDATE "+AWS_RDS_MENUDATA+" SET menucount = "+AWS_RDS_MENUDATA+".menucount \
-            + "+AWS_RDS_SIGNUPMENU+".menucount AND  where memberID = (%s) AND menuID = (%s)"
+        #회원데이터를 agegroup으로 바꾸어 업데이트
+        '''
+        sql1 = "UPDATE "+AWS_RDS_NONSIGNUPMENU+ \
+        " SET "+AWS_RDS_NONSIGNUPMENU+".count = "+AWS_RDS_NONSIGNUPMENU+".count \
+            + "+AWS_RDS_SIGNUPMENU+".menucount  \
+        where "+AWS_RDS_NONSIGNUPMENU+".menuID = "+AWS_RDS_SIGNUPMENU+".menuID AND " \
+        +AWS_RDS_NONSIGNUPMENU+".gender = "+AWS_RDS_SIGNUP+".gender AND " \
+        +" YEAR(NOW())-LEFT("+AWS_RDS_SIGNUP+".birthday,4) <13 AND " \
+        +AWS_RDS_NONSIGNUPMENU+".agegroup = '0~12'"
+        '''
+        sql1 = "UPDATE "+AWS_RDS_NONSIGNUPMENU+ \
+        " SET "+AWS_RDS_NONSIGNUPMENU+".count = "+AWS_RDS_NONSIGNUPMENU+".count \
+            + "+AWS_RDS_SIGNUPMENU+".menucount " \
+        +"JOIN "
+        
+        
+        self.curs.execute(sql1)
+        self.conn.commit()
+        print("update")
+        sql2="Select memberID from "+AWS_RDS_NONSIGNUPMENU+" Where agegroup=(%s) AND gender = (%s)"
+        val2=(age,gender)
+        self.curs.execute(sql2,val2)
+        self.conn.commit()
+        print("done")
            
         self.curs.close()
         self.conn.close()
