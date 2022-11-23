@@ -74,6 +74,7 @@ def faceCheck():
 
 @app.route('/faceOriginCheck', methods=['GET','POST'])
 def faceOriginCheck():
+    FL=flasklogin()
     file_path = "./image/check.jpg"
     if os.path.exists(file_path):
         os.remove(file_path)
@@ -81,6 +82,12 @@ def faceOriginCheck():
     object_name = "image/check.jpg"
     nonsignup_s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
     result = origincheck();
+    
+    if result ==0:
+        return jsonify({"result": result})
+    elif result==1:
+        gender_list,age_list=FL.age_gendercheck()
+        return jsonify({"result": result},{"gender":gender_list}, {"age":age_list})
     return jsonify({"result": result})
 
 
@@ -191,7 +198,7 @@ def signupdatasetmodel():
     password = request.args.get('password')
     birthdate = request.args.get('birthdate')
     gender = request.args.get('gender')
-    phonenumber = request.args.get('phonumber')
+    phonenumber = request.args.get('phonenumber')
     
     task = celery_make_model(name,password,birthdate,gender,phonenumber)
     

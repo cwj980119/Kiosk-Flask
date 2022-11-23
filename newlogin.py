@@ -111,7 +111,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
         age_list = ['(0 ~ 2)','(4 ~ 6)','(8 ~ 12)','(15 ~ 20)', '(25 ~ 32)','(38 ~ 43)','(48 ~ 53)','(60 ~ 100)']
         gender_list = ['Male', 'Female']
         
-        frame = cv2.imread('./image/temp.jpg',1)
+        frame = cv2.imread('./image/check.jpg',1)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
         # cascade 얼굴 탐지 알고리즘 
         results = cascade.detectMultiScale(gray)        
@@ -132,7 +132,7 @@ class flasklogin():    # 구 Thread 현 flasklogin
             age_preds = age_net.forward()
             age = age_preds.argmax()
             info = gender_list[gender] +' '+ age_list[age]
-            return jsonify({"gender": gender_list[gender]},{"age":age_list[age]})
+            return gender_list[gender],age_list[age]
             
 
         
@@ -345,10 +345,13 @@ class flasklogin():    # 구 Thread 현 flasklogin
         +" YEAR(NOW())-LEFT("+AWS_RDS_SIGNUP+".birthday,4) <13 AND " \
         +AWS_RDS_NONSIGNUPMENU+".agegroup = '0~12'"
         '''
-        sql1 = "UPDATE "+AWS_RDS_NONSIGNUPMENU+ \
+        sql1 = "UPDATE "+AWS_RDS_NONSIGNUPMENU+", "+AWS_RDS_MENUDATA+", "+AWS_RDS_SIGNUPMENU+ \
         " SET "+AWS_RDS_NONSIGNUPMENU+".count = "+AWS_RDS_NONSIGNUPMENU+".count \
-            + "+AWS_RDS_SIGNUPMENU+".menucount " \
-        +"JOIN "
+            + "+AWS_RDS_SIGNUPMENU+".menucount \
+        where "+AWS_RDS_NONSIGNUPMENU+".menuID = "+AWS_RDS_SIGNUPMENU+".menuID AND " \
+        +AWS_RDS_NONSIGNUPMENU+".gender = "+AWS_RDS_SIGNUP+".gender AND " \
+        +" YEAR(NOW())-LEFT("+AWS_RDS_SIGNUP+".birthday,4) <13 AND " \
+        +AWS_RDS_NONSIGNUPMENU+".agegroup = '0~12'"
         
         
         self.curs.execute(sql1)
