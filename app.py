@@ -195,9 +195,14 @@ def alldatasetmodel():
 def signupdatasetmodel():
     for i in range(11):
         object_name=request.args.get('object_name['+str(i)+']')
+        print('1', object_name)
         jpg=object_name.rfind('.jpg')
         object_name=object_name[:jpg+4]
+        print('2',object_name)
         file_path=object_name.replace('signup','./image')
+        print('3', file_path)
+        if os.path.exists(file_path):
+            os.remove(file_path)
         #jpg=file_path.rfind('.jpg')
         #file_path=file_path[:jpg+4]
         s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
