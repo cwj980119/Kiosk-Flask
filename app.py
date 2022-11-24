@@ -31,11 +31,11 @@ AWS_SECRET_ACCESS_KEY=os.getenv('AWS_SECRET_ACCESS_KEY')
 s3 = s3_connection()
 
 @celery.task()
-def celery_make_model(name,passoword,birthdate,gender,phonenumber):
+def celery_make_model(name,password,birthdate,gender,phonenumber):
     ml=Learnig()
     FL=flasklogin()
     ml.init_model()  
-    FL.signupDB(name,passoword,birthdate,gender,phonenumber)
+    FL.signupDB(name,password,birthdate,gender,phonenumber)
     FL.signupmenuDB()
     return ("celery_model complete")
 
@@ -160,17 +160,13 @@ def addface():
 
 @app.route('/test', methods=['GET','POST'])
 def test():
-    '''
-    object_name=request.args.get('object_name')
-    for i in range(object_name):
-        print(object_name[i])
-    jsonify({"result": "list possible"})
-    '''
     FL=flasklogin()
-    
-    mainresult, sideresult, drinkresult=FL.signupmenuprint(1)
-    
-    return jsonify(mainresult,sideresult,drinkresult)
+    name = '김성찬'
+    password = '1583'
+    birthdate = '1997-05-04'
+    gender = '1'
+    phonenumber = '01022661583'
+    FL.signupDB(name,password,birthdate,gender,phonenumber)
     return("done")
 
 @app.route('/signupdownload', methods=['GET','POST'])
