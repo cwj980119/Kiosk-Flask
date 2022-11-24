@@ -151,10 +151,9 @@ def signupmenu():
 @app.route('/addface', methods=['GET','POST'])
 def addface(): 
     object_name=request.args.get('object_name')
+    jpg=object_name.rfind('.jpg')
+    object_name=object_name[:jpg+4]
     file_path=object_name.replace('signup','./image')
-    jpg=file_path.rfind('.jpg')
-    file_path=file_path[:jpg+4]
-
     s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
     return("hello")
 
@@ -178,9 +177,9 @@ def test():
 def signupdownload():
     for i in range(11):
         object_name=request.args.get('object_name['+str(i)+']')
+        jpg=object_name.rfind('.jpg')
+        object_name=object_name[:jpg+4]
         file_path=object_name.replace('signup','./image')
-        jpg=file_path.rfind('.jpg')
-        file_path=file_path[:jpg+4]
         s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
     return True
 
@@ -196,9 +195,11 @@ def alldatasetmodel():
 def signupdatasetmodel():
     for i in range(11):
         object_name=request.args.get('object_name['+str(i)+']')
+        jpg=object_name.rfind('.jpg')
+        object_name=object_name[:jpg+4]
         file_path=object_name.replace('signup','./image')
-        jpg=file_path.rfind('.jpg')
-        file_path=file_path[:jpg+4]
+        #jpg=file_path.rfind('.jpg')
+        #file_path=file_path[:jpg+4]
         s3_get_object(s3, AWS_S3_BUCKET_NAME, object_name, file_path)
     
     name = request.args.get('fullname') 
