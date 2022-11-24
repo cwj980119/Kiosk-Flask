@@ -189,6 +189,9 @@ def alldatasetmodel():
 
 @app.route('/signup_dataset_model', methods=['GET','POST'])
 def signupdatasetmodel():
+    memberId = request.args.get('id')
+    os.makedirs("./image/dataset/test/"+memberId)
+    os.makedirs("./image/dataset/train/"+memberId)
     for i in range(11):
         object_name=request.args.get('object_name['+str(i)+']')
         print('1', object_name)
@@ -208,7 +211,7 @@ def signupdatasetmodel():
     birthdate = request.args.get('birthdate')
     gender = request.args.get('gender')
     phonenumber = request.args.get('phonenumber')
-    
+    print(name, password, birthdate, gender, phonenumber) 
     task = celery_make_model(name,password,birthdate,gender,phonenumber)
     
     return "signup user datasetmodel complete"
