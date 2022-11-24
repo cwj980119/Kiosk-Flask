@@ -190,18 +190,15 @@ def alldatasetmodel():
 @app.route('/signup_dataset_model', methods=['GET','POST'])
 def signupdatasetmodel():
     memberId = request.args.get('id')
-    if not os.path.exists("./image/dataset/test/"+memberId)
+    if not os.path.exists("./image/dataset/test/"+memberId):
         os.makedirs("./image/dataset/test/"+memberId)
-    if not os.path.exists("./image/dataset/train/"+memberId)
+    if not os.path.exists("./image/dataset/train/"+memberId):
         os.makedirs("./image/dataset/train/"+memberId)
     for i in range(11):
         object_name=request.args.get('object_name['+str(i)+']')
-        print('1', object_name)
         jpg=object_name.rfind('.jpg')
         object_name=object_name[:jpg+4]
-        print('2',object_name)
         file_path=object_name.replace('signup','./image')
-        print('3', file_path)
         if os.path.exists(file_path):
             os.remove(file_path)
         #jpg=file_path.rfind('.jpg')
@@ -212,9 +209,9 @@ def signupdatasetmodel():
     password = request.args.get('password')
     birthdate = request.args.get('birthdate')
     gender = request.args.get('gender')
-    phonenumber = request.args.get('phonenumber')
-    print(name, password, birthdate, gender, phonenumber) 
-    task = celery_make_model(name,password,birthdate,gender,phonenumber)
+    numb = request.args.get('numb')
+    print(name, password, birthdate, gender, numb) 
+    task = celery_make_model(name,password,birthdate,gender,numb)
     
     return "signup user datasetmodel complete"
 
