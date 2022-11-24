@@ -190,8 +190,10 @@ def alldatasetmodel():
 @app.route('/signup_dataset_model', methods=['GET','POST'])
 def signupdatasetmodel():
     memberId = request.args.get('id')
-    os.makedirs("./image/dataset/test/"+memberId)
-    os.makedirs("./image/dataset/train/"+memberId)
+    if not os.path.exists("./image/dataset/test/"+memberId)
+        os.makedirs("./image/dataset/test/"+memberId)
+    if not os.path.exists("./image/dataset/train/"+memberId)
+        os.makedirs("./image/dataset/train/"+memberId)
     for i in range(11):
         object_name=request.args.get('object_name['+str(i)+']')
         print('1', object_name)
